@@ -5,12 +5,15 @@ import {
   useLocation,
   type NavLinkProps,
 } from "react-router-dom";
-import { useAuth } from "../../pages/auth/context";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { Button } from "../Button";
 import { logout } from "../../pages/auth/service";
+import { authLogout } from "../../store/actions";
 
 export const Header = () => {
-  const { isLogged, onLogout } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [loadingLogout, setLoadingLogout] = useState(false);
@@ -26,7 +29,7 @@ export const Header = () => {
     try {
       setLoadingLogout(true);
       await logout();
-      onLogout();
+      dispatch(authLogout());
       navigate("/");
     } finally {
       setLoadingLogout(false);

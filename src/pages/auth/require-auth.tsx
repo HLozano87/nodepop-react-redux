@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { useAuth } from "./context";
 import { Navigate, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../store";
 
 interface AuthRouteProps {
   children: ReactNode;
@@ -8,8 +8,12 @@ interface AuthRouteProps {
   redirectTo?: string;
 }
 
-export const AuthRoute = ({ children, requireAuth, redirectTo }: AuthRouteProps) => {
-  const { isLogged } = useAuth();
+export const AuthRoute = ({
+  children,
+  requireAuth,
+  redirectTo,
+}: AuthRouteProps) => {
+  const isLogged = useAppSelector((state) => state.auth);
   const location = useLocation();
 
   const shouldAllow = requireAuth ? isLogged : !isLogged;
