@@ -5,12 +5,13 @@ import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
 import { Notifications } from "../../components/Notifications";
 import { useMessages } from "../../components/hooks/useMessage";
-import { useAuth } from "./context";
 import type { CredentialUser } from "./types-auth";
 import clsx from "clsx";
 import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/Input";
+import { useAppDispatch } from "../../store/index";
+import { authLogin } from "../../store/actions";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const LoginPage = () => {
     useMessages();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { onLogin } = useAuth();
+  const dispatch = useAppDispatch();
 
   const [credential, setCredentials] = useState<CredentialUser>(() => {
     const saved = storage.get("auth");
@@ -55,8 +56,7 @@ export const LoginPage = () => {
       } else {
         storage.remove("auth");
       }
-
-      onLogin();
+      dispatch(authLogin());
 
       showSuccess("¡Login exitoso!");
       navigate("/adverts", { replace: true });
