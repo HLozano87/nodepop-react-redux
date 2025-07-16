@@ -1,9 +1,14 @@
-import { useState, type FormEvent, type ChangeEvent, type FocusEvent } from "react";
-import { Button } from "../../components/button";
+import {
+  useState,
+  type FormEvent,
+  type ChangeEvent,
+  type FocusEvent,
+} from "react";
+import { Button } from "../../components/Button";
 import { createdUser } from "./service";
 import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/notifications";
+import { Notifications } from "../../components/Notifications";
 import { REGEXP } from "../../utils/constants";
 
 export const SignUpPage = () => {
@@ -23,7 +28,8 @@ export const SignUpPage = () => {
   const handleChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
-    const newValue = name === "username" || name === "email" ? value.toLowerCase() : value;
+    const newValue =
+      name === "username" || name === "email" ? value.toLowerCase() : value;
     setFormData((prev) => ({
       ...prev,
       [name]: newValue,

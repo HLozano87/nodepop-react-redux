@@ -6,7 +6,7 @@ import {
   type NavLinkProps,
 } from "react-router-dom";
 import { useAuth } from "../../pages/auth/context";
-import { Button } from "../button";
+import { Button } from "../Button";
 import { logout } from "../../pages/auth/service";
 
 export const Header = () => {

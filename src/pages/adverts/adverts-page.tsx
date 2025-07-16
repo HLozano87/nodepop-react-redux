@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import type { Advert } from "./type-advert";
 import { getAdvertsList } from "./services";
-import { Button } from "../../components/button";
+import { Button } from "../../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/context";
-import {
-  FilterClosedIcon,
-  FilterOpenIcon,
-} from "../../components/icons/filters";
+import { FilterClosedIcon, FilterOpenIcon } from "../../components/icons/filters";
+import { Input } from "../../components/Input";
 
 const EmptyAdverts = () => {
   return (
@@ -80,7 +78,7 @@ export const AdvertsPage = () => {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <h1 className={"title"}>Bienvenido a Nodepop</h1>
       <p className="py-1 text-center text-sm text-gray-600">
-        Página de nuncios
+        Página de anuncios
       </p>
       <div className="mb-4 text-right">
         <Button
@@ -96,7 +94,6 @@ export const AdvertsPage = () => {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-
           }}
           className="animate-fadeIn mb-8 rounded-xl bg-gray-100 p-4 shadow-inner"
         >
@@ -104,7 +101,6 @@ export const AdvertsPage = () => {
             Filtros
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
-
             <div>
               <label
                 className="mb-1 block text-sm font-medium text-gray-700"
@@ -112,8 +108,9 @@ export const AdvertsPage = () => {
               >
                 Nombre
               </label>
-              <input
+              <Input
                 id="nameFilter"
+                name="nameFilter"
                 type="text"
                 placeholder="Buscar por nombre"
                 value={nameFilter}
@@ -148,8 +145,9 @@ export const AdvertsPage = () => {
               >
                 Precio mínimo (€)
               </label>
-              <input
+              <Input
                 id="priceMin"
+                name="priceMin"
                 type="number"
                 min="0"
                 value={priceMin}
@@ -166,8 +164,9 @@ export const AdvertsPage = () => {
               >
                 Precio máximo (€)
               </label>
-              <input
+              <Input
                 id="priceMax"
+                name="priceMax"
                 type="number"
                 min="0"
                 value={priceMax}
@@ -179,16 +178,18 @@ export const AdvertsPage = () => {
 
             {/* Filtro por tags múltiples */}
             <div className="sm:col-span-2 md:col-span-2 lg:col-span-4">
-              <label className="mb-1 block text-sm font-medium text-gray-700 text-center">
+              <label className="mb-1 block text-center text-sm font-medium text-gray-700">
                 Tags
               </label>
-              <div className="flex flex-wrap gap-3 justify-center">
+              <div className="flex flex-wrap justify-center gap-3">
                 {uniqueTags.map((tag) => (
                   <label
                     key={tag}
                     className={"inline-flex items-center space-x-2"}
                   >
-                    <input
+                    <Input
+                      id={`tag-${tag}`}
+                      name="tagFilter"
                       type="checkbox"
                       value={tag}
                       checked={tagFilter.includes(tag)}

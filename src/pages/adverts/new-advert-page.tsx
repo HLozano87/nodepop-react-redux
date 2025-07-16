@@ -1,10 +1,11 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { Button } from "../../components/button";
+import { Button } from "../../components/Button";
 import { createdAdvert, getAdvertTags } from "./services";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/notifications";
+import { Notifications } from "../../components/Notifications";
 import type { AdvertPayload } from "./type-advert";
 import { useNavigate } from "react-router";
+import { Input } from "../../components/Input";
 
 export const NewAdvertPage = () => {
   const [formData, setFormData] = useState<AdvertPayload>({
@@ -18,7 +19,8 @@ export const NewAdvertPage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { successMessage, errorMessage, showSuccess, showError } = useMessages();
+  const { successMessage, errorMessage, showSuccess, showError } =
+    useMessages();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,7 +67,6 @@ export const NewAdvertPage = () => {
       showSuccess("¡Anuncio creado con éxito!");
 
       navigate(`/adverts/${newAdvert.id}`, { replace: true });
-
     } catch (error) {
       console.error("Something has gone wrong", error);
       showError("Ooops, algo ha salido mal...");
@@ -94,7 +95,11 @@ export const NewAdvertPage = () => {
   return (
     <div className="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg">
       <h1 className="title">Crear Anuncio</h1>
-      <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        encType="multipart/form-data"
+      >
         <Notifications
           successMessage={successMessage}
           errorMessage={errorMessage}
@@ -106,11 +111,11 @@ export const NewAdvertPage = () => {
           >
             Nombre <span className="required">*</span>
           </label>
-          <input
-            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-            type="text"
-            name="name"
+          <Input
             id="name"
+            name="name"
+            type="text"
+            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             required
             value={formData.name}
             onChange={handleChange}
@@ -121,11 +126,11 @@ export const NewAdvertPage = () => {
           <label className="mb-1 text-sm font-medium text-emerald-900">
             Precio <span className="required">*</span>
           </label>
-          <input
-            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-            type="number"
-            name="price"
+          <Input
             id="price"
+            name="price"
+            type="number"
+            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             min="0"
             step="0.01"
             value={formData.price}
@@ -141,11 +146,12 @@ export const NewAdvertPage = () => {
           <div className="mt-2 flex flex-wrap justify-center gap-2">
             {tags.map((tag) => (
               <label key={tag} className="cursor-pointer">
-                <input
-                  type="checkbox"
+                <Input
+                  id={`tag-${tag}`}
                   name="tags"
-                  value={tag}
+                  type="checkbox"
                   className="peer hidden"
+                  value={tag}
                   checked={selectedTags.includes(tag)}
                   onChange={() => toggleTag(tag)}
                 />
@@ -166,15 +172,15 @@ export const NewAdvertPage = () => {
               htmlFor="compra"
               className="inline-flex items-center space-x-4"
             >
-              <input
-                type="radio"
-                name="sale"
+              <Input
                 id="compra"
+                name="sale"
+                type="radio"
+                className="rounded text-blue-500 focus:ring-blue-500"
                 value="Compra"
                 checked={formData.sale === true}
                 onChange={handleChange}
                 required
-                className="rounded text-blue-500 focus:ring-blue-500"
               />
               <span className="mb-1 rounded-full bg-emerald-100 px-3 text-[1rem] font-medium text-emerald-800">
                 Compra
@@ -185,15 +191,15 @@ export const NewAdvertPage = () => {
               htmlFor="venta"
               className="inline-flex items-center space-x-4"
             >
-              <input
-                type="radio"
-                name="sale"
+              <Input
                 id="venta"
+                name="sale"
+                type="radio"
+                className="rounded text-blue-500 focus:ring-blue-500"
                 value="Venta"
                 checked={formData.sale === false}
                 onChange={handleChange}
                 required
-                className="rounded text-blue-500 focus:ring-blue-500"
               />
               <span className="mb-1 rounded-full bg-blue-100 px-3 text-[1rem] font-medium text-blue-800">
                 Venta
@@ -237,7 +243,7 @@ export const NewAdvertPage = () => {
                   className="mt-2 max-h-24 w-auto rounded-lg object-contain"
                 />
               )}
-              <input
+              <Input
                 id="photo"
                 name="photo"
                 type="file"

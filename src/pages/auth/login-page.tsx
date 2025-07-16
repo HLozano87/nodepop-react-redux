@@ -1,15 +1,16 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { login } from "./service";
-import { Button } from "../../components/button";
+import { Button } from "../../components/Button";
 import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
-import { Notifications } from "../../components/notifications";
+import { Notifications } from "../../components/Notifications";
 import { useMessages } from "../../components/hooks/useMessage";
 import { useAuth } from "./context";
 import type { CredentialUser } from "./types-auth";
 import clsx from "clsx";
 import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
+import { Input } from "../../components/Input";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ export const LoginPage = () => {
     useMessages();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const { onLogin } = useAuth();
 
   const [credential, setCredentials] = useState<CredentialUser>(() => {
@@ -31,7 +31,7 @@ export const LoginPage = () => {
           remember: true,
         };
       } catch (error) {
-        console.error("Credentials not valid", error)
+        console.error("Credentials not valid", error);
         showError(errorMessage);
       }
     }
@@ -61,7 +61,7 @@ export const LoginPage = () => {
       showSuccess("¡Login exitoso!");
       navigate("/adverts", { replace: true });
     } catch (error) {
-      console.error("Login error:", error)
+      console.error("Login error:", error);
       showError("Credenciales incorrectas.");
       setCredentials((prev) => ({
         ...prev,
@@ -101,15 +101,15 @@ export const LoginPage = () => {
           >
             Email
           </label>
-          <input
+          <Input
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="email"
             id="email"
             name="email"
             placeholder="Email"
-            required
             onChange={handleChange}
             value={credential.email}
+            required
           />
         </div>
 
@@ -121,7 +121,7 @@ export const LoginPage = () => {
             Contraseña
           </label>
           <div className="relative">
-            <input
+            <Input
               className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
               type={showPassword ? "text" : "password"}
               id="password"
@@ -154,7 +154,7 @@ export const LoginPage = () => {
 
         <div className="input-login flex items-center justify-between text-sm">
           <label className="flex items-center">
-            <input
+            <Input
               className="form-checkbox mr-2"
               name="remember"
               type="checkbox"
@@ -173,8 +173,8 @@ export const LoginPage = () => {
           aria-label="Iniciar sesión"
           title="Iniciar sesión"
         >
-          {isLoading ? ( 
-            <SpinnerLoadingText text="Iniciando sesión..."/>
+          {isLoading ? (
+            <SpinnerLoadingText text="Iniciando sesión..." />
           ) : (
             "Iniciar sesión"
           )}

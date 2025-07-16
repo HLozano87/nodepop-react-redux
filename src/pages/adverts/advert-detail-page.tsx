@@ -5,8 +5,8 @@ import { getAdvert, deleteAdvert } from "./services";
 import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/notifications";
-import { Button } from "../../components/button";
+import { Notifications } from "../../components/Notifications";
+import { Button } from "../../components/Button";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,9 +19,9 @@ export const AdvertPage = () => {
     useMessages();
 
   useEffect(() => {
-    if(!id) {
-      navigate('/not-found', {replace:true})
-      return
+    if (!id) {
+      navigate("/not-found", { replace: true });
+      return;
     }
     const fetchAdvert = async () => {
       try {
@@ -52,11 +52,11 @@ export const AdvertPage = () => {
     try {
       await deleteAdvert(id);
       showSuccess("Anuncio borrado correctamente.");
-      setLoadingDelete(false)
+      setLoadingDelete(false);
 
       navigate("/adverts", { replace: true });
     } catch (error) {
-      console.error("Error to deleting advert.", error)
+      console.error("Error to deleting advert.", error);
       setLoadingDelete(false);
       showError("Error al borrar el anuncio. Inténtalo más tarde.");
     }
