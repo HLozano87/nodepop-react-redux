@@ -1,0 +1,51 @@
+name: Testing and deploy to production
+
+# Ejecutar en cada push o pull request a main y ramas feature
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Definir trabajos
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x] # Cambia a las versiones que quieras probar
+
+    steps:
+      # 1. Clona el código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Instala Node.js (elige tu versión)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }} # Usa tu versión de Node
+
+      # 3. Cachea dependencias para acelerar builds
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # 4. Instala dependencias
+      - name: Install dependencies
+        run: npm ci
+
+      # 5. Ejecuta build para asegurarse que compila
+      - name: Build
+        run: npm run build
+
+      # 6. Ejecuta las pruebas con Vitest
+      - name: Run tests
+        run: npm run test
+
+        

@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #087644;
+  --secondary-color: #10574c;
+  --text-color: white;
+  --btn-primary-color: #2d8757;
+  --btn-secondary-color: #9b2929;
+  --bg-color: #001d18eb;
+}
+.title {
+  @apply mb-6 text-center text-2xl font-bold text-emerald-700;
+}
+
+.btn-primary {
+  @apply mx-auto block rounded-[20px] bg-[var(--btn-primary-color)] px-6 py-[5px] text-[var(--text-color)] transition duration-300 hover:bg-emerald-600;
+}
+
+.btn-primary:disabled {
+  @apply bg-gray-400 text-gray-200;
+}
+
+.btn-secondary {
+  @apply mx-auto rounded-[20px] bg-[var(--btn-secondary-color)] px-6 py-[5px] text-[var(--text-color)] transition-colors duration-200 ease-in-out hover:bg-red-600;
+}
+
+.btn-secondary:disabled {
+  @apply bg-gray-400 text-gray-200;
+}
+
+.required {
+  @apply text-red-600;
+}
