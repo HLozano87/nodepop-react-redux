@@ -3,13 +3,9 @@ import type { Advert } from "./type-advert";
 import { getAdvertsList } from "./services";
 import { Button } from "../../components/Button";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  FilterClosedIcon,
-  FilterOpenIcon,
-} from "../../components/icons/filters";
+import { FilterClosedIcon, FilterOpenIcon } from "../../components/icons/filters";
 import { Input } from "../../components/Input";
-import { useAppSelector } from "../../store";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { authLogout } from "../../store/actions";
 
 const EmptyAdverts = () => {
@@ -32,10 +28,10 @@ export const AdvertsPage = () => {
   const [priceMin, setPriceMin] = useState("");
   const [priceMax, setPriceMax] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [typeSaleFilter, setTypeSaleFilter] = useState(""); // "buy" | "sell" | ""
+  const [typeSaleFilter, setTypeSaleFilter] = useState("");
   const isLogged = useAppSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!isLogged) {
