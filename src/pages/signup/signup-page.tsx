@@ -10,12 +10,14 @@ import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Notifications } from "../../components/Notifications";
 import { REGEXP } from "../../utils/constants";
+import { Input } from "../../components/Input";
+import { Form } from "../../components/Form";
+import { Page } from "../../components/layout/page";
 
 export const SignUpPage = () => {
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
 
-  //TODO Component form
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +31,9 @@ export const SignUpPage = () => {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
     const newValue =
-      name === "username" || name === "email" ? value.toLowerCase() : value;
+      name === "username" || name === "email" 
+        ? value.toLowerCase().trim()
+        : value.trim();
     setFormData((prev) => ({
       ...prev,
       [name]: newValue,
@@ -55,20 +59,23 @@ export const SignUpPage = () => {
   };
 
   const isFormValid =
-    formData.name.trim() !== "" &&
-    REGEXP.email.test(formData.email.trim()) &&
-    REGEXP.username.test(formData.username.trim()) &&
-    formData.password.trim() !== "";
+    formData.name !== "" &&
+    REGEXP.email.test(formData.email) &&
+    REGEXP.username.test(formData.username) &&
+    formData.password !== "";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (formData.password !== formData.confirmPassword) {
       showError("Las contraseñas no coinciden.");
       return;
     }
 
-    if (!formData.name || !formData.username || !formData.email) {
+    if (
+      !formData.name ||
+      !formData.username ||
+      !formData.email
+    ) {
       showError("Por favor rellene todos los campos.");
       return;
     }
@@ -87,48 +94,35 @@ export const SignUpPage = () => {
 
   return (
     <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
-      <h1 className="title">Registrarse</h1>
-
-      <Notifications
-        successMessage={successMessage}
-        errorMessage={errorMessage}
-      />
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label
-            htmlFor="name"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Nombre <span className="text-red-600">*</span>
-          </label>
-          <input
+      <Page title={"Registro"}>
+        <Notifications
+          successMessage={successMessage}
+          errorMessage={errorMessage}
+        />
+        <Form onSubmit={handleSubmit} className="space-y-5">
+          <Input
+            label="Nombre"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="text"
             id="name"
             name="name"
             placeholder="Nombre"
             onChange={handleChange}
-            pattern="^[a-zA-Z0-9]{4,}$"
+            pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{4,}$"
+            required={true}
           />
-        </div>
 
-        <div>
-          <label
-            htmlFor="username"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Nombre de usuario <span className="text-red-600">*</span>
-          </label>
-
-          <input
+          <Input
+            label="Nombre de usuario"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="text"
             id="username"
             name="username"
             minLength={4}
             value={formData.username}
-            placeholder="username"
+            placeholder="Nombre de usuario"
             onChange={handleChange}
+            aria-invalid={formData.username.length < 4}
           />
           {formData.username.trim().length > 0 &&
             formData.username.length < 4 && (
@@ -136,73 +130,52 @@ export const SignUpPage = () => {
                 El username debe tener minimo 4 caracteres
               </p>
             )}
-        </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Email <span className="text-red-600">*</span>
-          </label>
-          <input
+          <Input
+            label="Correo"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="email"
             id="email"
             name="email"
             value={formData.email}
-            placeholder="Email"
-            pattern="/^\w{4,}([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/"
-            required
+            placeholder="Su correo electronico"
+            pattern="^\w{4,}([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$"
+            required={true}
             onChange={handleChange}
             onBlur={handleBlur}
           />
-        </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Password <span className="text-red-600">*</span>
-          </label>
-          <input
+          <Input
+            label="Contraseña"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="password"
             id="password"
             name="password"
-            placeholder="Password"
-            autoComplete="false"
+            placeholder="Introduzca su contraseña"
+            autoComplete="off"
             minLength={6}
-            required
+            required={true}
             onChange={handleChange}
           />
-        </div>
 
-        <div>
-          <label
-            htmlFor="confirm-password"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Confirm Password <span className="text-red-600">*</span>
-          </label>
-          <input
+          <Input
+            label="Confirmar contraseña"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="password"
             id="password-confirm"
             name="confirmPassword"
-            placeholder="Confirm password"
-            autoComplete="false"
+            placeholder="Confirme la contraseña"
+            autoComplete="off"
             minLength={6}
-            required
+            required={true}
             onChange={handleChange}
           />
-        </div>
 
-        <Button type="submit" variant="primary" disabled={!isFormValid}>
-          Registrar
-        </Button>
-      </form>
+          <Button type="submit" variant="primary" disabled={!isFormValid}>
+            Registrarse
+          </Button>
+        </Form>
+      </Page>
     </div>
   );
 };
