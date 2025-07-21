@@ -1,11 +1,13 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
 import { createdAdvert, getAdvertTags } from "./services";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/Notifications";
+import { Notifications } from "../../components/notification";
 import type { AdvertPayload } from "./type-advert";
 import { useNavigate } from "react-router";
-import { Input } from "../../components/Input";
+import { Input } from "../../components/formFields";
+import { Page } from "../../components/layout/page";
+import { Form } from "../../components/form";
 
 export const NewAdvertPage = () => {
   const [formData, setFormData] = useState<AdvertPayload>({
@@ -93,81 +95,71 @@ export const NewAdvertPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg">
-      <h1 className="title">Crear Anuncio</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-        encType="multipart/form-data"
-      >
-        <Notifications
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-        />
-        <div>
-          <label
-            htmlFor="name"
-            className="text-sm font-medium text-emerald-900"
-          >
-            Nombre <span className="required">*</span>
-          </label>
+    <main className="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg">
+      <Page title={"Crear Anuncio"}>
+        <Form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+          encType="multipart/form-data"
+          method="POST"
+        >
+          <Notifications
+            successMessage={successMessage}
+            errorMessage={errorMessage}
+          />
           <Input
+            label="Nombre"
+            labelClassName="label-newAdvert"
             id="name"
             name="name"
             type="text"
-            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+            className="newAdvertInputs"
             required
             value={formData.name}
             onChange={handleChange}
           />
-        </div>
 
-        <div>
-          <label className="mb-1 text-sm font-medium text-emerald-900">
-            Precio <span className="required">*</span>
-          </label>
           <Input
+            label="Precio"
+            labelClassName="label-newAdvert"
             id="price"
             name="price"
             type="number"
-            className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-            min="0"
+            className="newAdvertInputs"
+            min="1"
             step="0.01"
             value={formData.price}
             required
             onChange={handleChange}
           />
-        </div>
 
-        <div>
-          <label className="mb-1 text-sm font-medium text-emerald-900">
-            Tags <span className="required">*</span>
-          </label>
-          <div className="mt-2 flex flex-wrap justify-center gap-2">
-            {tags.map((tag) => (
-              <label key={tag} className="cursor-pointer">
-                <Input
-                  id={`tag-${tag}`}
-                  name="tags"
-                  type="checkbox"
-                  className="peer hidden"
-                  value={tag}
-                  checked={selectedTags.includes(tag)}
-                  onChange={() => toggleTag(tag)}
-                />
-                <span className="inline-block rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition peer-checked:border-emerald-600 peer-checked:bg-emerald-100 peer-checked:text-emerald-700">
-                  {tag}
-                </span>
-              </label>
-            ))}
+          <div>
+            <label className="mb-1 text-sm font-medium text-emerald-900">
+              Tags <span className="required">*</span>
+            </label>
+            <div className="mt-2 flex flex-wrap justify-center gap-2">
+              {tags.map((tag) => (
+                <label key={tag} className="cursor-pointer">
+                  {/* WIP TODO component created problem to peer hidden */}
+                  <input
+                    id={`tag-${tag}`}
+                    name="tags"
+                    type="checkbox"
+                    className="peer hidden"
+                    value={tag}
+                    checked={selectedTags.includes(tag)}
+                    onChange={() => toggleTag(tag)}
+                  />
+                  <span className="newAdvertTags">{tag}</span>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
           <label className="mb-1 text-sm font-medium text-emerald-900">
             Tipo <span className="required">*</span>
           </label>
-          <div className="mt-2 flex h-12 justify-around rounded-xl border border-gray-300 px-4 py-2 focus-within:ring-2 focus-within:ring-emerald-600">
+          <div className="newAdvertTypes">
             <label
               htmlFor="compra"
               className="inline-flex items-center space-x-4"
@@ -206,61 +198,61 @@ export const NewAdvertPage = () => {
               </span>
             </label>
           </div>
-        </div>
 
-        <div>
-          <label className="mb-1 text-sm font-medium text-emerald-900">
-            Foto (opcional)
-          </label>
-          <div className="mt-2">
-            <label
-              htmlFor="photo"
-              className="flex w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-gray-400 bg-gray-50 px-4 py-6 text-sm text-gray-600 transition hover:border-emerald-600 hover:bg-emerald-50"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2 h-5 w-5 text-emerald-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 15a4 4 0 00.88 2.51A4 4 0 007 19h10a4 4 0 004-4 4 4 0 00-.88-2.51M15 10l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-              <span>
-                {photoFile
-                  ? `Imagen seleccionada: ${photoFile.name}`
-                  : `Haz click para subir una imagen`}
-              </span>
-              {photoPreview && (
-                <img
-                  src={photoPreview}
-                  alt="Preview"
-                  className="mt-2 max-h-24 w-auto rounded-lg object-contain"
-                />
-              )}
-              <Input
-                id="photo"
-                name="photo"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleChange}
-              />
+          <div>
+            <label className="mb-1 text-sm font-medium text-emerald-900">
+              Foto (opcional)
             </label>
+            <div className="mt-2">
+              <label
+                htmlFor="photo"
+                className="flex w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-gray-400 bg-gray-50 px-4 py-6 text-sm text-gray-600 transition hover:border-emerald-600 hover:bg-emerald-50"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2 h-5 w-5 text-emerald-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 15a4 4 0 00.88 2.51A4 4 0 007 19h10a4 4 0 004-4 4 4 0 00-.88-2.51M15 10l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+                <span>
+                  {photoFile
+                    ? `Imagen seleccionada: ${photoFile.name}`
+                    : `Haz click para subir una imagen`}
+                </span>
+                {photoPreview && (
+                  <img
+                    src={photoPreview}
+                    alt="Preview"
+                    className="mt-2 max-h-24 w-auto rounded-lg object-contain"
+                  />
+                )}
+                <Input
+                  id="photo"
+                  name="photo"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleChange}
+                />
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div className="text-center">
-          <Button type="submit" variant="primary" disabled={!isFormValid}>
-            Publicar anuncio
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className="text-center">
+            <Button type="submit" variant="primary" disabled={!isFormValid}>
+              Publicar anuncio
+            </Button>
+          </div>
+        </Form>
+      </Page>
+    </main>
   );
 };
