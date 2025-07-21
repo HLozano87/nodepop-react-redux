@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import type { Advert } from "./type-advert";
 import { getAdvertsList } from "./services";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
 import { Link, useNavigate } from "react-router-dom";
 import { FilterClosedIcon, FilterOpenIcon } from "../../components/icons/filters";
-import { Input } from "../../components/Input";
+import { Input } from "../../components/formFields";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { authLogout } from "../../store/actions";
+import { Page } from "../../components/layout/page";
+import { Form } from "../../components/form";
 
 const EmptyAdverts = () => {
   return (
@@ -78,77 +80,63 @@ export const AdvertsPage = () => {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className={"title"}>Bienvenido a Nodepop</h1>
-      <p className="py-1 text-center text-sm text-gray-600">
-        Página de anuncios
-      </p>
-      <div className="mb-4 text-right">
-        <Button
-          onClick={() => setShowFilters((prev) => !prev)}
-          className="inline-flex items-center justify-center rounded-lg bg-emerald-600 p-2 text-white shadow transition hover:bg-emerald-700"
-          title={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
-        >
-          {showFilters ? <FilterOpenIcon /> : <FilterClosedIcon />}
-        </Button>
-      </div>
+    <main>
+      <Page title={"Bienvenido a Nodepop"}>
+        <p className="py-1 text-center text-sm text-gray-600">
+          Página de anuncios
+        </p>
+        <div className="mb-4 text-right">
+          <Button
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="inline-flex items-center justify-center rounded-lg bg-emerald-600 p-2 text-white shadow transition hover:bg-emerald-700"
+            title={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+          >
+            {showFilters ? <FilterOpenIcon /> : <FilterClosedIcon />}
+          </Button>
+        </div>
 
-      {showFilters && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-          className="animate-fadeIn mb-8 rounded-xl bg-gray-100 p-4 shadow-inner"
-        >
-          <h2 className="mb-2 text-center text-xl font-medium text-emerald-900">
-            Filtros
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <label
-                className="mb-1 block text-sm font-medium text-gray-700"
-                htmlFor="nameFilter"
-              >
-                Nombre
-              </label>
+        {showFilters && (
+          <Form
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
+            className="animate-fadeIn mb-8 rounded-xl bg-gray-100 p-4 shadow-inner"
+          >
+            <h2 className="mb-2 text-center text-xl font-medium text-emerald-900">
+              Filtros
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
               <Input
+                label="Nombre"
+                labelClassName="label-filter"
                 id="nameFilter"
                 name="nameFilter"
                 type="text"
                 placeholder="Buscar por nombre"
                 value={nameFilter}
                 onChange={(event) => setNameFilter(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 focus:outline-none"
+                className="advert-card"
               />
-            </div>
 
-            <div>
-              <label
-                className="mb-1 block text-sm font-medium text-gray-700"
-                htmlFor="typeSaleFilter"
-              >
-                Tipo de anuncio
-              </label>
-              <select
-                id="typeSaleFilter"
-                value={typeSaleFilter}
-                onChange={(event) => setTypeSaleFilter(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 focus:outline-none"
-              >
-                <option value="">Todos</option>
-                <option value="sell">Venta</option>
-                <option value="buy">Compra</option>
-              </select>
-            </div>
+              <div>
+                <label className="label-filter" htmlFor="typeSaleFilter">
+                  Tipo de anuncio
+                </label>
+                <select
+                  id="typeSaleFilter"
+                  value={typeSaleFilter}
+                  onChange={(event) => setTypeSaleFilter(event.target.value)}
+                  className="advert-card"
+                >
+                  <option value="">Todos</option>
+                  <option value="sell">Venta</option>
+                  <option value="buy">Compra</option>
+                </select>
+              </div>
 
-            <div>
-              <label
-                className="mb-1 block text-sm font-medium text-gray-700"
-                htmlFor="priceMin"
-              >
-                Precio mínimo (€)
-              </label>
               <Input
+                label="Precio mínimo (€)"
+                labelClassName="label-filter"
                 id="priceMin"
                 name="priceMin"
                 type="number"
@@ -156,18 +144,12 @@ export const AdvertsPage = () => {
                 value={priceMin}
                 onChange={(event) => setPriceMin(event.target.value)}
                 placeholder="Mínimo"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 focus:outline-none"
+                className="advert-card"
               />
-            </div>
 
-            <div>
-              <label
-                className="mb-1 block text-sm font-medium text-gray-700"
-                htmlFor="priceMax"
-              >
-                Precio máximo (€)
-              </label>
               <Input
+                label="Precio máximo (€)"
+                labelClassName="label-filter"
                 id="priceMax"
                 name="priceMax"
                 type="number"
@@ -175,91 +157,91 @@ export const AdvertsPage = () => {
                 value={priceMax}
                 onChange={(event) => setPriceMax(event.target.value)}
                 placeholder="Máximo"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 focus:outline-none"
+                className="advert-card"
               />
-            </div>
 
-            {/* Filtro por tags múltiples */}
-            <div className="sm:col-span-2 md:col-span-2 lg:col-span-4">
-              <label className="mb-1 block text-center text-sm font-medium text-gray-700">
-                Tags
-              </label>
-              <div className="flex flex-wrap justify-center gap-3">
-                {uniqueTags.map((tag) => (
-                  <label
-                    key={tag}
-                    className={"inline-flex items-center space-x-2"}
-                  >
-                    <Input
-                      id={`tag-${tag}`}
-                      name="tagFilter"
-                      type="checkbox"
-                      value={tag}
-                      checked={tagFilter.includes(tag)}
-                      onChange={(event) => {
-                        if (event.target.checked) {
-                          setTagFilter([...tagFilter, tag]);
-                        } else {
-                          setTagFilter(tagFilter.filter((t) => t !== tag));
-                        }
-                      }}
-                      className="accent-emerald-600"
-                    />
-                    <span className="text-sm text-gray-700">{tag}</span>
+              {/* Filtro por tags múltiples */}
+              <div className="sm:col-span-2 md:col-span-2 lg:col-span-4">
+                <div className="flex flex-wrap justify-center gap-3">
+                  <label className="mb-1 block text-center text-sm font-medium text-gray-700">
+                    Tags
                   </label>
-                ))}
+                  {uniqueTags.map((tag) => (
+                    <label
+                      key={tag}
+                      className={"inline-flex items-center space-x-2"}
+                    >
+                      <Input
+                        id={`tag-${tag}`}
+                        name="tagFilter"
+                        type="checkbox"
+                        value={tag}
+                        checked={tagFilter.includes(tag)}
+                        onChange={(event) => {
+                          if (event.target.checked) {
+                            setTagFilter([...tagFilter, tag]);
+                          } else {
+                            setTagFilter(tagFilter.filter((t) => t !== tag));
+                          }
+                        }}
+                        className="accent-emerald-600"
+                      />
+                      <span className="text-sm text-gray-700">{tag}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 text-right">
-            <Button type="submit" variant="primary">
-              Aplicar filtros
-            </Button>
-          </div>
-        </form>
-      )}
+            <div className="mt-4 text-right">
+              <Button type="submit" variant="primary">
+                Aplicar filtros
+              </Button>
+            </div>
+          </Form>
+        )}
 
-      {/* Lista de anuncios */}
-      {filteredAdverts.length > 0 ? (
-        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {filteredAdverts.map((advert) => (
-            <li key={advert.id}>
-              <div className="flex flex-col space-y-3 rounded-2xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg">
-                <Link to={`/adverts/${advert.id}`}>
-                  <h3 className="text-center text-lg font-semibold text-emerald-800">
-                    {advert.name}
-                  </h3>
-                </Link>
-                <Link to={`/adverts/${advert.id}`}>
-                  <img
-                    src={advert.photo || "/no-fotos.png"}
-                    alt={advert.name || "Sin imagen"}
-                    className="mb-4 h-48 w-full rounded-lg object-contain"
-                  />
-                </Link>
-                <p className="py-1 text-center text-sm text-gray-600">
-                  {advert.tags.join(", ")}
-                </p>
-                <p className="text-center font-bold text-emerald-900">
-                  {advert.price} €
-                </p>
-                <span
-                  className={`mx-auto inline-flex items-center justify-center rounded-full px-6 py-1 text-xs font-medium shadow-lg ${
-                    advert.sale
-                      ? "bg-emerald-200 text-emerald-800"
-                      : "bg-blue-200 text-blue-800"
-                  }`}
-                >
-                  {advert.sale ? "Compra" : "Venta"}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <EmptyAdverts />
-      )}
-    </div>
+        {/* Lista de anuncios */}
+        {filteredAdverts.length > 0 ? (
+          <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {filteredAdverts.map((advert) => (
+              <li key={advert.id}>
+                <div className="flex flex-col space-y-3 rounded-2xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg">
+                  <Link to={`/adverts/${advert.id}`}>
+                    <h3 className="text-center text-lg font-semibold text-emerald-800">
+                      {advert.name}
+                    </h3>
+                  </Link>
+                  <Link to={`/adverts/${advert.id}`}>
+                    <img
+                      src={advert.photo || "/no-fotos.png"}
+                      alt={advert.name || "Sin imagen"}
+                      className="mb-4 h-48 w-full rounded-lg object-contain"
+                    />
+                  </Link>
+                  <p className="py-1 text-center text-sm text-gray-600">
+                    {advert.tags.join(", ")}
+                  </p>
+                  <p className="text-center font-bold text-emerald-900">
+                    {advert.price} €
+                  </p>
+                  <span
+                    className={`mx-auto inline-flex items-center justify-center rounded-full px-6 py-1 text-xs font-medium shadow-lg ${
+                      advert.sale
+                        ? "bg-emerald-200 text-emerald-800"
+                        : "bg-blue-200 text-blue-800"
+                    }`}
+                  >
+                    {advert.sale ? "Compra" : "Venta"}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EmptyAdverts />
+        )}
+      </Page>
+    </main>
   );
 };

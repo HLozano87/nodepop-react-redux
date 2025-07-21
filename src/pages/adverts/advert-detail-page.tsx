@@ -5,8 +5,8 @@ import { getAdvert, deleteAdvert } from "./services";
 import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/Notifications";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
+import { Notifications } from "../../components/notification";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -63,90 +63,92 @@ export const AdvertPage = () => {
   };
 
   return (
-    <Page title="Detalle del anuncio">
-      <div className="space-y-4">
-        {!imageError && advert.photo ? (
-          <a
-            href={advert.photo}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <img
-              src={advert.photo}
-              alt={advert.name || "Imagen del anuncio"}
-              className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = "/no-fotos.png";
-                setImageError(true);
-              }}
-            />
-          </a>
-        ) : (
-          <>
-            <img
-              src="/no-fotos.png"
-              alt="Sin imagen disponible"
-              className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
-            />
-            <p className="text-center text-sm text-gray-500">
-              Imagen del anuncio {advert.name} no disponible
-            </p>
-          </>
-        )}
-
-        <h2 className="text-center text-2xl font-semibold text-emerald-900">
-          {advert.name}
-        </h2>
-        <p className="text-center text-gray-700">{advert.tags.join(", ")}</p>
-        <p className="text-center text-xl font-semibold text-emerald-800">
-          {advert.price} €
-        </p>
-        <p className="text-center">
-          <span
-            className={`inline-block rounded-full px-4 py-1 text-sm font-medium shadow-md ${
-              advert.sale
-                ? "bg-emerald-200 text-emerald-800"
-                : "bg-blue-200 text-blue-800"
-            }`}
-          >
-            {advert.sale ? "Compra" : "Venta"}
-          </span>
-        </p>
-
-        {!showConfirm ? (
-          <div className="text-center">
-            <Button variant="secondary" onClick={handleDeleteClick}>
-              Borrar anuncio
-            </Button>
-          </div>
-        ) : (
-          <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
-            <Notifications
-              successMessage={successMessage}
-              errorMessage={errorMessage}
-            />
-            <p className="mb-4 text-lg font-semibold text-gray-700">
-              ¿Estás seguro que quieres borrar este anuncio?
-            </p>
-            <Button
-              className="mr-4 rounded bg-gray-300 px-5 py-2 text-gray-800 transition hover:bg-gray-400"
-              onClick={cancelDelete}
-              disabled={loadingDelete}
+    <main className="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg">
+      <Page title="Detalle del anuncio">
+        <div className="space-y-4">
+          {!imageError && advert.photo ? (
+            <a
+              href={advert.photo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
             >
-              Cancelar
-            </Button>
-            <Button
-              className="rounded bg-red-600 px-5 py-2 text-white transition hover:bg-red-700"
-              onClick={confirmDelete}
-              disabled={loadingDelete}
+              <img
+                src={advert.photo}
+                alt={advert.name || "Imagen del anuncio"}
+                className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/no-fotos.png";
+                  setImageError(true);
+                }}
+              />
+            </a>
+          ) : (
+            <>
+              <img
+                src="/no-fotos.png"
+                alt="Sin imagen disponible"
+                className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
+              />
+              <p className="text-center text-sm text-gray-500">
+                Imagen del anuncio {advert.name} no disponible
+              </p>
+            </>
+          )}
+
+          <h2 className="text-center text-2xl font-semibold text-emerald-900">
+            {advert.name}
+          </h2>
+          <p className="text-center text-gray-700">{advert.tags.join(", ")}</p>
+          <p className="text-center text-xl font-semibold text-emerald-800">
+            {advert.price} €
+          </p>
+          <p className="text-center">
+            <span
+              className={`inline-block rounded-full px-4 py-1 text-sm font-medium shadow-md ${
+                advert.sale
+                  ? "bg-emerald-200 text-emerald-800"
+                  : "bg-blue-200 text-blue-800"
+              }`}
             >
-              {loadingDelete ? "Borrando..." : "Confirmar"}
-            </Button>
-          </div>
-        )}
-      </div>
-    </Page>
+              {advert.sale ? "Compra" : "Venta"}
+            </span>
+          </p>
+
+          {!showConfirm ? (
+            <div className="text-center">
+              <Button variant="secondary" onClick={handleDeleteClick}>
+                Borrar anuncio
+              </Button>
+            </div>
+          ) : (
+            <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
+              <Notifications
+                successMessage={successMessage}
+                errorMessage={errorMessage}
+              />
+              <p className="mb-4 text-lg font-semibold text-gray-700">
+                ¿Estás seguro que quieres borrar este anuncio?
+              </p>
+              <Button
+                className="mr-4 rounded-xl bg-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-400"
+                onClick={cancelDelete}
+                disabled={loadingDelete}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="rounded-xl bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
+                onClick={confirmDelete}
+                disabled={loadingDelete}
+              >
+                {loadingDelete ? "Borrando..." : "Confirmar"}
+              </Button>
+            </div>
+          )}
+        </div>
+      </Page>
+    </main>
   );
 };

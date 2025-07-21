@@ -1,15 +1,15 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { login } from "./service";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
 import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
-import { Notifications } from "../../components/Notifications";
+import { Notifications } from "../../components/notification";
 import { useMessages } from "../../components/hooks/useMessage";
 import type { CredentialUser } from "./types-auth";
 import clsx from "clsx";
 import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
-import { Input } from "../../components/Input";
+import { Input } from "../../components/formFields";
 import { useAppDispatch } from "../../store/index";
 import { authLogin } from "../../store/actions";
 

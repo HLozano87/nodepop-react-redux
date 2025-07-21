@@ -31,3 +31,27 @@
 .required {
   @apply text-red-600;
 }
+
+.advert-card {
+  @apply w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 focus:outline-none;
+}
+
+.label-filter {
+  @apply mb-1 block text-sm font-medium text-gray-700;
+}
+
+.label-newAdvert {
+  @apply text-sm font-medium text-emerald-900;
+}
+
+.newAdvertInputs {
+  @apply mt-2 w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none;
+}
+
+.newAdvertTags {
+  @apply inline-block rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition peer-checked:border-emerald-600 peer-checked:bg-emerald-100 peer-checked:text-emerald-700;
+}
+
+.newAdvertTypes {
+  @apply mt-2 flex h-12 justify-around rounded-xl border border-gray-300 px-4 py-2 focus-within:ring-2 focus-within:ring-emerald-600;
+}

@@ -4,14 +4,14 @@ import {
   type ChangeEvent,
   type FocusEvent,
 } from "react";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
 import { createdUser } from "./service";
 import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/Notifications";
+import { Notifications } from "../../components/notification";
 import { REGEXP } from "../../utils/constants";
-import { Input } from "../../components/Input";
-import { Form } from "../../components/Form";
+import { Input } from "../../components/formFields";
+import { Form } from "../../components/form";
 import { Page } from "../../components/layout/page";
 
 export const SignUpPage = () => {
@@ -31,7 +31,7 @@ export const SignUpPage = () => {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
     const newValue =
-      name === "username" || name === "email" 
+      name === "username" || name === "email"
         ? value.toLowerCase().trim()
         : value.trim();
     setFormData((prev) => ({
@@ -71,11 +71,7 @@ export const SignUpPage = () => {
       return;
     }
 
-    if (
-      !formData.name ||
-      !formData.username ||
-      !formData.email
-    ) {
+    if (!formData.name || !formData.username || !formData.email) {
       showError("Por favor rellene todos los campos.");
       return;
     }
