@@ -8,7 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { Button } from "../button";
 import { logout } from "../../pages/auth/service";
-import { authLogout } from "../../store/actions";
+import { authLogout } from "../../store/auth/actions";
 
 export const Header = () => {
   const isLogged = useAppSelector((state) => state.auth);

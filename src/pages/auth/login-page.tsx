@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { login } from "./service";
 import { Button } from "../../components/button";
 import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,16 +9,15 @@ import clsx from "clsx";
 import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/formFields";
-import { useAppDispatch } from "../../store/index";
-import { authLogin } from "../../store/actions";
+import { useLoginAction } from "../../store/auth/hooks";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const loginAction = useLoginAction();
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useAppDispatch();
 
   const [credential, setCredentials] = useState<CredentialUser>(() => {
     const saved = storage.get("auth");
@@ -50,13 +48,12 @@ export const LoginPage = () => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      const token = await login(credential);
+      const token = await loginAction(credential);
       if (credential.remember) {
         storage.set("auth", token);
       } else {
         storage.remove("auth");
       }
-      dispatch(authLogin());
 
       showSuccess("¡Login exitoso!");
       navigate("/adverts", { replace: true });
