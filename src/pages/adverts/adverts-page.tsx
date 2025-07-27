@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import type { Advert } from "./type-advert";
 import { getAdvertsList } from "./services";
-import { Button } from "../../components/button";
+import { Button } from "../../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FilterClosedIcon,
   FilterOpenIcon,
 } from "../../components/icons/filters";
-import { Input } from "../../components/formFields";
+import { Input } from "../../components/ui/formFields";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { authLogout } from "../../store/auth/actions";
 import { Page } from "../../components/layout/page";
-import { Form } from "../../components/form";
+import { Form } from "../../components/ui/form";
 
 const EmptyAdverts = () => {
   return (

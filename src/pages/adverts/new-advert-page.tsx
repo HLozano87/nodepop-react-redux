@@ -1,13 +1,13 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { Button } from "../../components/button";
+import { Button } from "../../components/ui/button";
 import { createdAdvert, getAdvertTags } from "./services";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/notification";
+import { Notifications } from "../../components/ui/notification";
 import type { AdvertPayload } from "./type-advert";
 import { useNavigate } from "react-router";
-import { Input } from "../../components/formFields";
+import { Input } from "../../components/ui/formFields";
 import { Page } from "../../components/layout/page";
-import { Form } from "../../components/form";
+import { Form } from "../../components/ui/form";
 
 export const NewAdvertPage = () => {
   const [formData, setFormData] = useState<AdvertPayload>({

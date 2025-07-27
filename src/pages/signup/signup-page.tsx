@@ -4,14 +4,14 @@ import {
   type ChangeEvent,
   type FocusEvent,
 } from "react";
-import { Button } from "../../components/button";
+import { Button } from "../../components/ui/button";
 import { createdUser } from "./service";
 import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/notification";
+import { Notifications } from "../../components/ui/notification";
 import { REGEXP } from "../../utils/constants";
-import { Input } from "../../components/formFields";
-import { Form } from "../../components/form";
+import { Input } from "../../components/ui/formFields";
+import { Form } from "../../components/ui/form";
 import { Page } from "../../components/layout/page";
 
 export const SignUpPage = () => {

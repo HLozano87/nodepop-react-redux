@@ -6,7 +6,7 @@ import {
   type NavLinkProps,
 } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { Button } from "../button";
+import { Button } from "../ui/button";
 import { logout } from "../../pages/auth/service";
 import { authLogout } from "../../store/auth/actions";
 

@@ -5,8 +5,8 @@ import { getAdvert, deleteAdvert } from "./services";
 import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
 import { useMessages } from "../../components/hooks/useMessage";
-import { Button } from "../../components/button";
-import { Notifications } from "../../components/notification";
+import { Button } from "../../components/ui/button";
+import { Notifications } from "../../components/ui/notification";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
