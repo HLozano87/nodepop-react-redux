@@ -9,7 +9,7 @@ export const useAuth = () => {
 
 export const useLoginAction = () => {
   const dispatch = useAppDispatch();
-  return (credentials: CredentialUser) => {
+  return async (credentials: CredentialUser) => {
     return dispatch(authLogin(credentials));
   };
 };

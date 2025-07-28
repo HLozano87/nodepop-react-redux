@@ -52,7 +52,7 @@ export const authLogout = (): AuthLogout => ({
   type: "auth/logout",
 });
 
-export type Actions =
+export type AuthActions =
   | AuthLoginPending
   | AuthLoginFulfilled
   | AuthLoginRejected

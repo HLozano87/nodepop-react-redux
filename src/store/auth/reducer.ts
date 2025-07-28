@@ -1,4 +1,4 @@
-import type { Actions } from "./actions";
+import type { AuthActions } from "./actions";
 
 export type State = {
   auth: boolean;
@@ -10,7 +10,7 @@ const defaultState: State = {
 
 export const auth = (
   state = defaultState.auth,
-  action: Actions,
+  action: AuthActions,
 ): State["auth"] => {
   switch (action.type) {
     case "auth/login/fulfilled":

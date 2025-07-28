@@ -19,26 +19,10 @@ export const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [credential, setCredentials] = useState<CredentialUser>(() => {
-    const saved = storage.get("auth");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return {
-          email: parsed.email || "",
-          password: "",
-          remember: true,
-        };
-      } catch (error) {
-        console.error("Credentials not valid", error);
-        showError(errorMessage);
-      }
-    }
-    return {
-      email: "",
-      password: "",
-      remember: false,
-    };
+  const [credential, setCredentials] = useState<CredentialUser>({
+    email: "",
+    password: "",
+    remember: false,
   });
 
   const isLoginValid =

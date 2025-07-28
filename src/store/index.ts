@@ -1,18 +1,21 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "@redux-devtools/extension";
-import * as reducers from "./auth/reducer";
+import { auth } from "./auth/reducer";
+import { adverts } from "./adverts/reducer";
 import { useDispatch, useSelector } from "react-redux";
 import * as thunk from "redux-thunk";
-import type { Actions } from "./auth/actions";
+import type { AuthActions } from "./auth/actions";
+import type { AdvertActions } from "./adverts/actions";
 
-const rootReducer = combineReducers(reducers);
+const rootReducer = combineReducers({ auth, adverts });
+export type RootAction = AuthActions | AdvertActions
 
-export function configureStore(preloadedState: Partial<reducers.State>) {
+export function configureStore(preloadedState: Partial<RootState>) {
   const store = createStore(
     rootReducer,
     preloadedState as never,
     composeWithDevTools(
-      applyMiddleware(thunk.withExtraArgument<reducers.State, Actions>()),
+      applyMiddleware(thunk.withExtraArgument<RootState, RootAction>()),
     ),
   );
   return store;
@@ -29,5 +32,5 @@ export type AppThunk<ReturnType = void> = thunk.ThunkAction<
   ReturnType,
   RootState,
   undefined,
-  Actions
+  RootAction
 >;
