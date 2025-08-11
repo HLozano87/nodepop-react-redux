@@ -1,17 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Advert } from "./type-advert";
-import { getAdvert, deleteAdvert } from "./services";
-import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Button } from "../../components/ui/button";
 import { Notifications } from "../../components/ui/notification";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { advertDeleted, advertLoadedById } from "../../store/adverts/actions";
+import { AxiosError } from "axios";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [advert, setAdvert] = useState<Advert | null>(null);
+  const dispatch = useAppDispatch();
+  const advert = useAppSelector((state) => state.adverts.selectedAdvert);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -23,12 +24,12 @@ export const AdvertPage = () => {
       navigate("/not-found", { replace: true });
       return;
     }
-    const fetchAdvert = async () => {
+
+    const fetchData = async () => {
       try {
-        const data = await getAdvert(id);
-        setAdvert(data);
+        await dispatch(advertLoadedById(id));
       } catch (error) {
-        if (error instanceof AxiosError && error.response?.status === 404) {
+        if (error instanceof AxiosError && error.status === 404) {
           navigate("/not-found", { replace: true });
         } else {
           console.error("Error al obtener el anuncio:", error);
@@ -36,11 +37,11 @@ export const AdvertPage = () => {
       }
     };
 
-    fetchAdvert();
-  }, [id, navigate]);
+    fetchData();
+  }, [id, navigate, dispatch]);
 
   if (!advert) {
-    return <p className="py-8 text-center">Cargando anuncio...</p>;
+    return null;
   }
 
   const handleDeleteClick = () => setShowConfirm(true);
@@ -50,10 +51,9 @@ export const AdvertPage = () => {
     if (!id) return;
     setLoadingDelete(true);
     try {
-      await deleteAdvert(id);
+      await dispatch(advertDeleted(id));
       showSuccess("Anuncio borrado correctamente.");
       setLoadingDelete(false);
-
       navigate("/adverts", { replace: true });
     } catch (error) {
       console.error("Error to deleting advert.", error);

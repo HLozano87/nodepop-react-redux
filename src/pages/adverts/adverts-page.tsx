@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import type { Advert } from "./type-advert";
-import { getAdvertsList } from "./services";
 import { Button } from "../../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -12,6 +10,8 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { authLogout } from "../../store/auth/actions";
 import { Page } from "../../components/layout/page";
 import { Form } from "../../components/ui/form";
+import { advertsLoaded } from "../../store/adverts/actions";
+import { getAdverts } from "../../store/adverts/selectors";
 
 const EmptyAdverts = () => {
   return (
@@ -27,7 +27,6 @@ const EmptyAdverts = () => {
 };
 
 export const AdvertsPage = () => {
-  const [adverts, setAdverts] = useState<Advert[]>([]);
   const [nameFilter, setNameFilter] = useState("");
   const [tagFilter, setTagFilter] = useState<string[]>([]);
   const [priceMin, setPriceMin] = useState("");
@@ -37,18 +36,16 @@ export const AdvertsPage = () => {
   const isLogged = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const adverts = useAppSelector(getAdverts);
 
   useEffect(() => {
     if (!isLogged) {
       dispatch(authLogout());
       navigate("/login", { replace: true });
+      return;
     }
-    async function getAdverts() {
-      const advert = await getAdvertsList();
-      setAdverts(advert);
-    }
-    getAdverts();
-  }, [isLogged, navigate]);
+    dispatch(advertsLoaded())
+  }, [isLogged, dispatch, navigate])
 
   const filteredAdverts = adverts.filter((advert) => {
     const matchesName = advert.name
@@ -57,8 +54,8 @@ export const AdvertsPage = () => {
 
     const matchesType =
       typeSaleFilter === "" ||
-      (typeSaleFilter === "sell" && !advert.sale) ||
-      (typeSaleFilter === "buy" && advert.sale);
+      (typeSaleFilter === "sell" && advert.sale === false) ||
+      (typeSaleFilter === "buy" && advert.sale === true);
 
     const matchesMinPrice =
       priceMin === "" || advert.price >= parseFloat(priceMin);

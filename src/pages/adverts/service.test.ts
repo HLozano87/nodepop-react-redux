@@ -1,6 +1,6 @@
 import {
   getAdvertsList,
-  getAdvert,
+  getAdvertById,
   getAdvertTags,
   createdAdvert,
   deleteAdvert,
@@ -32,13 +32,15 @@ describe("advert service", () => {
     expect(result).toEqual(mockData);
   });
 
-  it("getAdvert should call apiClient.get with id and return data", async () => {
+  it("getAdvertById should call apiClient.get with id and return data", async () => {
     const mockData = { id: "123", name: "Advert 123" };
     (apiClient.get as Mock).mockResolvedValueOnce({ data: mockData });
 
-    const result = await getAdvert("123");
+    const result = await getAdvertById("123");
 
-    expect(apiClient.get).toHaveBeenCalledWith(ADVERT_ENDPOINT.ADVERT_ID("123"));
+    expect(apiClient.get).toHaveBeenCalledWith(
+      ADVERT_ENDPOINT.ADVERT_ID("123"),
+    );
     expect(result).toEqual(mockData);
   });
 

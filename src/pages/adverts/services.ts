@@ -7,7 +7,7 @@ export const getAdvertsList = async (): Promise<Advert[]> => {
   return response.data;
 };
 
-export const getAdvert = async (advertId: string): Promise<Advert> => {
+export const getAdvertById = async (advertId: string): Promise<Advert> => {
   const response = await apiClient.get<Advert>(
     `${ADVERT_ENDPOINT.ADVERT_ID(advertId)}`,
   );

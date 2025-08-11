@@ -1,13 +1,14 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "../../components/ui/button";
-import { createdAdvert, getAdvertTags } from "./services";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Notifications } from "../../components/ui/notification";
 import type { AdvertPayload } from "./type-advert";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/formFields";
 import { Page } from "../../components/layout/page";
 import { Form } from "../../components/ui/form";
+import { useAppDispatch, useAppSelector, type RootState } from "../../store";
+import { advertsCreated, advertsTagsLoaded } from "../../store/adverts/actions";
 
 export const NewAdvertPage = () => {
   const [formData, setFormData] = useState<AdvertPayload>({
@@ -19,19 +20,16 @@ export const NewAdvertPage = () => {
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
+  const tags = useAppSelector((state: RootState) => state.adverts.tags);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const getTags = async () => {
-      const tags = await getAdvertTags();
-      setTags(tags);
-    };
-    getTags();
-  }, []);
+    dispatch(advertsTagsLoaded());
+  }, [dispatch]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -43,28 +41,14 @@ export const NewAdvertPage = () => {
     formData.name.trim() !== "" &&
     formData.price > 0 &&
     selectedTags.length > 0 &&
-    (formData.sale === true || formData.sale === false);
+    typeof formData.sale === "boolean";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const payload: AdvertPayload = {
-        ...formData,
-        tags: selectedTags,
-      };
-
-      // TODO mejor usar event.target.formData?
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", payload.name);
-      formDataToSend.append("price", String(payload.price));
-      formDataToSend.append("sale", String(payload.sale));
-      payload.tags.forEach((tag) => formDataToSend.append("tags", tag));
-      if (photoFile) {
-        formDataToSend.append("photo", photoFile);
-      }
-
-      const newAdvert = await createdAdvert(formDataToSend);
+      const formDataToSend = new FormData(event.currentTarget);
+      const newAdvert = await dispatch(advertsCreated(formDataToSend));
 
       showSuccess("¡Anuncio creado con éxito!");
 
@@ -88,7 +72,7 @@ export const NewAdvertPage = () => {
         price: isNaN(parsedPrice) ? 0 : parsedPrice,
       }));
     } else if (name === "sale") {
-      setFormData((prev) => ({ ...prev, sale: value === "Compra" }));
+      setFormData((prev) => ({ ...prev, sale: value === "true" }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -169,7 +153,7 @@ export const NewAdvertPage = () => {
                 name="sale"
                 type="radio"
                 className="rounded text-blue-500 focus:ring-blue-500"
-                value="Compra"
+                value="true"
                 checked={formData.sale === true}
                 onChange={handleChange}
                 required
@@ -188,7 +172,7 @@ export const NewAdvertPage = () => {
                 name="sale"
                 type="radio"
                 className="rounded text-blue-500 focus:ring-blue-500"
-                value="Venta"
+                value="false"
                 checked={formData.sale === false}
                 onChange={handleChange}
                 required
