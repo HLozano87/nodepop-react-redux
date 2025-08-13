@@ -6,7 +6,7 @@ describe('apiClient', () => {
     localStorage.clear()
   })
 
-  it('should add Authorization header from localStorage in interceptor', async () => {
+  test('should add Authorization header from localStorage in interceptor', async () => {
     // Arrange
     localStorage.setItem('auth', 'FAKE_TOKEN')
 
@@ -23,7 +23,7 @@ describe('apiClient', () => {
     expect(calledConfig.headers?.Authorization).toBe('Bearer FAKE_TOKEN');
   });
 
-  it('should not add Authorization header if no token', async () => {
+  test('should not add Authorization header if no token', async () => {
     // localStorage está vacío
 
     // Mock the adapter to capture the config
@@ -37,12 +37,12 @@ describe('apiClient', () => {
     expect(calledConfig.headers?.Authorization).toBeUndefined();
   })
 
-  it('should set Authorization header globally', () => {
+  test('should set Authorization header globally', () => {
     setAuthorizationHeader('MY_TOKEN')
     expect(apiClient.defaults.headers.common['Authorization']).toBe('Bearer MY_TOKEN')
   })
 
-  it('should remove Authorization header globally', () => {
+  test('should remove Authorization header globally', () => {
     setAuthorizationHeader('MY_TOKEN')
     removeAuthorizationHeader()
     expect(apiClient.defaults.headers.common['Authorization']).toBeUndefined()

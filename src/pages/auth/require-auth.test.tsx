@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { AuthRoute } from "./require-auth";
-import * as AuthContext from "./context"; // Para mockear useAuth
+import * as reduxHooks from "../../store"; // importamos el hook para mockearlo
 
 describe("AuthRoute component", () => {
   const ChildComponent = () => <div>Contenido protegido</div>;
@@ -10,8 +10,8 @@ describe("AuthRoute component", () => {
     vi.restoreAllMocks();
   });
 
-  it("muestra los hijos cuando requireAuth=true y usuario está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: true, onLogin: () => {}, onLogout: () => {} });
+  test("muestra los hijos cuando requireAuth=true y usuario está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(true);
 
     render(
       <MemoryRouter initialEntries={["/private"]}>
@@ -31,8 +31,8 @@ describe("AuthRoute component", () => {
     expect(screen.getByText("Contenido protegido")).toBeInTheDocument();
   });
 
-  it("redirige a /login cuando requireAuth=true y usuario NO está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: false, onLogin: () => {}, onLogout: () => {} });
+  test("redirige a /login cuando requireAuth=true y usuario NO está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(false);
 
     render(
       <MemoryRouter initialEntries={["/private"]}>
@@ -53,8 +53,8 @@ describe("AuthRoute component", () => {
     expect(screen.getByText("Página Login")).toBeInTheDocument();
   });
 
-  it("redirige a redirectTo personalizado si está definido y usuario no está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: false, onLogin: () => {}, onLogout: () => {} });
+  test("redirige a redirectTo personalizado si está definido y usuario no está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(false);
 
     render(
       <MemoryRouter initialEntries={["/private"]}>
@@ -75,8 +75,8 @@ describe("AuthRoute component", () => {
     expect(screen.getByText("Redirect Personalizado")).toBeInTheDocument();
   });
 
-  it("muestra los hijos cuando requireAuth=false y usuario NO está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: false, onLogin: () => {}, onLogout: () => {} });
+  test("muestra los hijos cuando requireAuth=false y usuario NO está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(false);
 
     render(
       <MemoryRouter initialEntries={["/signup"]}>
@@ -96,8 +96,8 @@ describe("AuthRoute component", () => {
     expect(screen.getByText("Contenido protegido")).toBeInTheDocument();
   });
 
-  it("redirige a /adverts cuando requireAuth=false y usuario está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: true, onLogin: () => {}, onLogout: () => {} });
+  test("redirige a /adverts cuando requireAuth=false y usuario está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(true);
 
     render(
       <MemoryRouter initialEntries={["/signup"]}>
@@ -118,8 +118,8 @@ describe("AuthRoute component", () => {
     expect(screen.getByText("Página Adverts")).toBeInTheDocument();
   });
 
-  it("redirige a redirectTo personalizado cuando requireAuth=false y usuario está logueado", () => {
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ isLogged: true, onLogin: () => {}, onLogout: () => {} });
+  test("redirige a redirectTo personalizado cuando requireAuth=false y usuario está logueado", () => {
+    vi.spyOn(reduxHooks, "useAppSelector").mockReturnValue(true);
 
     render(
       <MemoryRouter initialEntries={["/signup"]}>

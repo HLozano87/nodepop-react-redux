@@ -3,7 +3,7 @@ import { ErrorBoundary } from "./error-boundary";
 import { vi } from "vitest";
 
 describe("ErrorBoundary", () => {
-  it("renders children when no error occurs", () => {
+  test("renders children when no error occurs", () => {
     render(
       <ErrorBoundary>
         <div>Componente hijo sin error</div>
@@ -13,7 +13,7 @@ describe("ErrorBoundary", () => {
     expect(screen.getByText("Componente hijo sin error")).toBeDefined();
   });
 
-  it("catches errors and displays fallback UI", () => {
+  test("catches errors and displays fallback UI", () => {
     // Mock console.error para no ensuciar la consola en test
     const consoleErrorMock = vi.spyOn(console, "error").mockImplementation(() => {});
 

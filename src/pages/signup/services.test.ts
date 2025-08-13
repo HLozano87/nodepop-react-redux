@@ -30,7 +30,7 @@ describe("createdUser", () => {
     vi.clearAllMocks();
   });
 
-  it("should call apiClient.post with correct URL and credentials", async () => {
+  test("should call apiClient.post with correct URL and credentials", async () => {
     (apiClient.post as Mock).mockResolvedValueOnce({ data: mockResponse });
 
     const result = await createdUser(mockCredentials);
@@ -43,7 +43,7 @@ describe("createdUser", () => {
     expect(result).toEqual(mockResponse);
   });
 
-  it("should handle errors and log them", async () => {
+  test("should handle errors and log them", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     (apiClient.post as Mock).mockRejectedValueOnce(new Error("API error"));
 

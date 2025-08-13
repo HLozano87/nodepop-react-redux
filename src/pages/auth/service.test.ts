@@ -33,7 +33,7 @@ describe("Auth Service", () => {
     vi.clearAllMocks();
   });
 
-  it("login() should call apiClient.post, set header, store token and return it", async () => {
+  test("login() should call apiClient.post, set header, store token and return it", async () => {
     (apiClient.post as any).mockResolvedValueOnce({ data: mockToken });
 
     const token = await login(mockCredentials);
@@ -44,7 +44,7 @@ describe("Auth Service", () => {
     expect(token).toBe(mockToken.accessToken);
   });
 
-  it("logout() should remove token and clear header", async () => {
+  test("logout() should remove token and clear header", async () => {
     await logout();
 
     expect(storage.remove).toHaveBeenCalledWith("auth");

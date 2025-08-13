@@ -1,8 +1,7 @@
-import { describe, it, expect } from "vitest";
 import { REGEXP } from "./constants";
 
 describe("REGEXP.email", () => {
-  it("debería aceptar emails alfanuméricos válidos", () => {
+  test("debería aceptar emails alfanuméricos válidos", () => {
     const validEmails = [
       "abcd@domain.com",
       "abcd123@server.net",
@@ -15,7 +14,7 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería aceptar emails válidos con guiones y puntos", () => {
+  test("debería aceptar emails válidos con guiones y puntos", () => {
     const validEmails = [
       "abcd.fgh@domain.com",
       "abcd-fgh@domain.com",
@@ -28,7 +27,7 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería rechazar emails con menos de 4 caracteres antes de @", () => {
+  test("debería rechazar emails con menos de 4 caracteres antes de @", () => {
     const tooShort = [
       "a@domain.com",
       "ab@domain.com",
@@ -39,8 +38,8 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería rechazar emails con espacios", () => {
-    const withSpaces = [
+  test("debería rechazar emails con espacios", () => {
+    const wtesthSpaces = [
       "abc d@domain.com",
       " abcd@domain.com",
       "abcd @domain.com",
@@ -49,12 +48,12 @@ describe("REGEXP.email", () => {
       "abcd@do main.com",
       "abc d@do main.com",
     ];
-    withSpaces.forEach(email => {
+    wtesthSpaces.forEach(email => {
       expect(REGEXP.email.test(email)).toBe(false);
     });
   });
 
-  it("debería rechazar emails con caracteres inválidos", () => {
+  test("debería rechazar emails con caracteres inválidos", () => {
     const invalidChars = [
       "abcd!@domain.com",
       "abcd$@domain.com",
@@ -69,19 +68,19 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería rechazar emails con guiones bajos (no permitidos por el regexp)", () => {
-    const withUnderscores = [
+  test("debería rechazar emails con guiones bajos (no permtestidos por el regexp)", () => {
+    const wtesthUnderscores = [
       "john_doe@domain.com",
       "abcd_fgh@domain.com",
       "abcd_fgh.ijk@domain.com",
       "user_name@domain.com",
     ];
-    withUnderscores.forEach(email => {
+    wtesthUnderscores.forEach(email => {
       expect(REGEXP.email.test(email)).toBe(false);
     });
   });
 
-  it("debería rechazar emails con punto inicial o final en la parte local", () => {
+  test("debería rechazar emails con punto inicial o final en la parte local", () => {
     const invalidDots = [
       ".abcd@domain.com",
       "abcd.@domain.com",
@@ -92,20 +91,20 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería rechazar emails con letras mayúsculas", () => {
-    const withUpperCase = [
+  test("debería rechazar emails con letras mayúsculas", () => {
+    const wtesthUpperCase = [
       "Abcd@domain.com",
       "ABCD@domain.com",
       "abcd@Domain.com",
       "abcd@DOMAIN.COM",
       "User@domain.com",
     ];
-    withUpperCase.forEach(email => {
+    wtesthUpperCase.forEach(email => {
       expect(REGEXP.email.test(email)).toBe(false);
     });
   });
 
-  it("debería aceptar dominios con múltiples niveles válidos", () => {
+  test("debería aceptar dominios con múltiples niveles válidos", () => {
     const validMultiDomain = [
       "abcd@domain.com",
       "abcd@sub.domain.com",
@@ -117,12 +116,12 @@ describe("REGEXP.email", () => {
     });
   });
 
-  it("debería rechazar emails con extensiones de dominio inválidas", () => {
+  test("debería rechazar emails con extensiones de dominio inválidas", () => {
     const invalidExtensions = [
-      "abcd@domain.c",      // muy corta
-      "abcd@domain.comex",  // muy larga
-      "abcd@domain.",       // sin extensión
-      "abcd@domain",        // sin punto ni extensión
+      "abcd@domain.c",
+      "abcd@domain.comex",
+      "abcd@domain.",
+      "abcd@domain",
     ];
     invalidExtensions.forEach(email => {
       expect(REGEXP.email.test(email)).toBe(false);
@@ -131,7 +130,7 @@ describe("REGEXP.email", () => {
 });
 
 describe("REGEXP.username", () => {
-  it("debería aceptar usernames alfanuméricos válidos", () => {
+  test("debería aceptar usernames alfanuméricos válidos", () => {
     const validUsernames = [
       "abcd",
       "user123",
@@ -149,7 +148,7 @@ describe("REGEXP.username", () => {
     });
   });
 
-  it("debería aceptar usernames solo con letras minúsculas", () => {
+  test("debería aceptar usernames solo con letras minúsculas", () => {
     const validUsernames = [
       "abcd",
       "usuario",
@@ -163,7 +162,7 @@ describe("REGEXP.username", () => {
     });
   });
 
-  it("debería rechazar usernames que sean solo números", () => {
+  test("debería rechazar usernames que sean solo números", () => {
     const onlyNumbers = [
       "1234",
       "123456",
@@ -177,7 +176,7 @@ describe("REGEXP.username", () => {
     });
   });
 
-  it("debería rechazar usernames con menos de 4 caracteres", () => {
+  test("debería rechazar usernames con menos de 4 caracteres", () => {
     const tooShort = [
       "a",
       "ab",
@@ -192,8 +191,8 @@ describe("REGEXP.username", () => {
     });
   });
 
-  it("debería rechazar usernames con letras mayúsculas", () => {
-    const withUpperCase = [
+  test("debería rechazar usernames con letras mayúsculas", () => {
+    const wtesthUpperCase = [
       "Abcd",
       "USER",
       "Test123",
@@ -202,13 +201,13 @@ describe("REGEXP.username", () => {
       "User1",
       "testUSER",
     ];
-    withUpperCase.forEach(username => {
+    wtesthUpperCase.forEach(username => {
       expect(REGEXP.username.test(username)).toBe(false);
     });
   });
 
-  it("debería rechazar usernames con caracteres especiales", () => {
-    const withSpecialChars = [
+  test("debería rechazar usernames con caracteres especiales", () => {
+    const wtesthSpecialChars = [
       "user_name",
       "user-name",
       "user@name",
@@ -224,13 +223,13 @@ describe("REGEXP.username", () => {
       "user?123",
       "user#123",
     ];
-    withSpecialChars.forEach(username => {
+    wtesthSpecialChars.forEach(username => {
       expect(REGEXP.username.test(username)).toBe(false);
     });
   });
 
-  it("debería rechazar usernames con espacios", () => {
-    const withSpaces = [
+  test("debería rechazar usernames con espacios", () => {
+    const wtesthSpaces = [
       " user",
       "user ",
       " user ",
@@ -239,12 +238,12 @@ describe("REGEXP.username", () => {
       "u ser",
       "  abcd  ",
     ];
-    withSpaces.forEach(username => {
+    wtesthSpaces.forEach(username => {
       expect(REGEXP.username.test(username)).toBe(false);
     });
   });
 
-  it("debería rechazar usernames vacíos o null", () => {
+  test("debería rechazar usernames vacíos o null", () => {
     const emptyValues = [
       "",
       "   ",
