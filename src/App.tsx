@@ -1,12 +1,19 @@
+import { lazy, Suspense } from "react";
 import { Layout } from "./components/layout/layout";
 import { AdvertPage } from "./pages/adverts/advert-detail-page";
-import { AdvertsPage } from "./pages/adverts/adverts-page";
 import { NewAdvertPage } from "./pages/adverts/new-advert-page";
 import { LoginPage } from "./pages/auth/login-page";
 import { AuthRoute } from "./pages/auth/require-auth";
 import NotFoundPage from "./pages/not-found";
 import { SignUpPage } from "./pages/signup/signup-page";
 import { Routes, Route, Navigate, Outlet } from "react-router";
+import { SpinnerLoadingText } from "./components/icons/spinner";
+
+const AdvertsPage = lazy(() =>
+  import("./pages/adverts/adverts-page").then((res) => ({
+    default: res.AdvertsPage,
+  })),
+);
 
 function App() {
   return (
@@ -20,9 +27,17 @@ function App() {
         <Route
           index
           element={
-            <AuthRoute requireAuth={true} redirectTo="/login">
-              <AdvertsPage />
-            </AuthRoute>
+            <Suspense
+              fallback={
+                <div className="items-center">
+                  <SpinnerLoadingText text="Cargando anuncios..." />
+                </div>
+              }
+            >
+              <AuthRoute requireAuth={true} redirectTo="/login">
+                <AdvertsPage />
+              </AuthRoute>
+            </Suspense>
           }
         />
         {/* Protegidas */}
