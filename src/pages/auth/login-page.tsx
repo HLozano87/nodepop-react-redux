@@ -10,6 +10,7 @@ import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/ui/formFields";
 import { useLoginAction } from "../../store/auth/hooks";
+import { Form } from "../../components/ui/form";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -70,7 +71,15 @@ export const LoginPage = () => {
         Login
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <Form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        initialValue={{
+          email: credential.email,
+          password: credential.password,
+          remember: credential.remember ?? false,
+        }}
+      >
         <div>
           <Notifications
             successMessage={successMessage}
@@ -160,7 +169,7 @@ export const LoginPage = () => {
             "Iniciar sesión"
           )}
         </Button>
-      </form>
+      </Form>
 
       <p className="mt-6 text-center text-sm text-emerald-900">
         ¿No tienes cuenta?

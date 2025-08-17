@@ -105,7 +105,7 @@ export const SignUpPage = () => {
             placeholder="Nombre"
             onChange={handleChange}
             pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{4,}$"
-            required={true}
+            required
           />
 
           <Input
@@ -136,7 +136,7 @@ export const SignUpPage = () => {
             value={formData.email}
             placeholder="Su correo electronico"
             pattern="^\w{4,}([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$"
-            required={true}
+            required
             onChange={handleChange}
             onBlur={handleBlur}
           />
@@ -150,7 +150,7 @@ export const SignUpPage = () => {
             placeholder="Introduzca su contraseña"
             autoComplete="off"
             minLength={6}
-            required={true}
+            required
             onChange={handleChange}
           />
 
@@ -163,7 +163,7 @@ export const SignUpPage = () => {
             placeholder="Confirme la contraseña"
             autoComplete="off"
             minLength={6}
-            required={true}
+            required
             onChange={handleChange}
           />
 

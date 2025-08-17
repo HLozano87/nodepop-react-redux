@@ -131,7 +131,9 @@ export const advertSelectedFulfilled = (
   type: "adverts/selected/fulfilled",
   payload: advert,
 });
-export const advertSelectedRejected = (error: Error): AdvertSelectedRejected => ({
+export const advertSelectedRejected = (
+  error: Error,
+): AdvertSelectedRejected => ({
   type: "adverts/selected/rejected",
   error: error instanceof Error ? error : new Error(String(error)),
 });
@@ -142,16 +144,12 @@ export const advertDeletedPending = (): AdvertDeletedPending => ({
   type: "adverts/deleted/pending",
 });
 
-export const advertDeletedFulfilled = (
-  id: string,
-): AdvertDeletedFulfilled => ({
+export const advertDeletedFulfilled = (id: string): AdvertDeletedFulfilled => ({
   type: "adverts/deleted/fulfilled",
   payload: id,
 });
 
-export const advertDeletedRejected = (
-  error: Error,
-): AdvertDeletedRejected => ({
+export const advertDeletedRejected = (error: Error): AdvertDeletedRejected => ({
   type: "adverts/deleted/rejected",
   error: error instanceof Error ? error : new Error(String(error)),
 });
@@ -200,20 +198,24 @@ export const advertsTagsLoaded = (): AppThunk<Promise<void>> => {
       dispatch(advertsTagsFulfilled(tags));
     } catch (error) {
       dispatch(advertsTagsRejected(error as Error));
-      console.error("Error loading tags", error);
+      throw error;
     }
   };
 };
 
 export const advertLoadedById = (advertId: string): AppThunk<Promise<void>> => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const { adverts } = getState();
+    const cachedAdvert = adverts.adverts?.find((adv) => adv.id === advertId);
+    cachedAdvert && dispatch(advertSelectedFulfilled(cachedAdvert));
+
     dispatch(advertSelectedPending());
     try {
       const advert = await getAdvertById(advertId);
       dispatch(advertSelectedFulfilled(advert));
     } catch (error) {
       dispatch(advertDeletedRejected(error as Error));
-      console.error("Error loading advert detail", error);
+      throw error;
     }
   };
 };

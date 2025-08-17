@@ -6,44 +6,43 @@ import { Button } from "../../components/ui/button";
 import { Notifications } from "../../components/ui/notification";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { advertDeleted, advertLoadedById } from "../../store/adverts/actions";
+import { getAdvertById } from "../../store/adverts/selectors";
+import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { AxiosError } from "axios";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const advert = useAppSelector((state) => state.adverts.selectedAdvert);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
+  const advert = useAppSelector(getAdvertById(id));
 
-  useEffect(() => {
-    if (!id) {
-      navigate("/not-found", { replace: true });
-      return;
-    }
-
-    const fetchData = async () => {
-      try {
-        await dispatch(advertLoadedById(id));
-      } catch (error) {
-        if (error instanceof AxiosError && error.status === 404) {
-          navigate("/not-found", { replace: true });
-        } else {
-          console.error("Error al obtener el anuncio:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [id, navigate, dispatch]);
-
-  if (!advert) {
-    return null;
+useEffect(() => {
+  if (!id) {
+    navigate("/not-found", { replace: true });
+    return;
   }
 
+  const fetchAdvert = async () => {
+    try {
+      await dispatch(advertLoadedById(id));
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        navigate("/not-found", { replace: true });
+      }
+    }
+  };
+
+  fetchAdvert();
+}, [id, dispatch, navigate]);
+
+  if (!advert) {
+    return <SpinnerLoadingText text="Cargando anuncio..." />;
+  }
   const handleDeleteClick = () => setShowConfirm(true);
   const cancelDelete = () => setShowConfirm(false);
 
@@ -56,7 +55,6 @@ export const AdvertPage = () => {
       setLoadingDelete(false);
       navigate("/adverts", { replace: true });
     } catch (error) {
-      console.error("Error to deleting advert.", error);
       setLoadingDelete(false);
       showError("Error al borrar el anuncio. Inténtalo más tarde.");
     }
@@ -143,7 +141,7 @@ export const AdvertPage = () => {
                 onClick={confirmDelete}
                 disabled={loadingDelete}
               >
-                {loadingDelete ? "Borrando..." : "Confirmar"}
+                {loadingDelete ? <SpinnerLoadingText text="Borrando..." /> : "Confirmar"}
               </Button>
             </div>
           )}

@@ -7,6 +7,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "types": ["vitest/globals"],
+    "forceConsistentCasingInFileNames": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
