@@ -2,13 +2,17 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { LoginPage } from "./login-page";
 import { storage } from "../../utils/storage";
-import { useMessages } from "../../components/hooks/useMessage";
+import { useNotifications } from "../../components/hooks/useNotifications";
 import { useLoginAction } from "../../store/auth/hooks";
+import { NotificationsProvider } from "../../components/ui/NotificationContext";
+import { vi } from "vitest";
 
 // Mocks
 vi.mock("../../utils/storage");
-vi.mock("../../components/hooks/useMessage");
 vi.mock("../../store/auth/hooks");
+vi.mock("../../components/hooks/useNotifications", () => ({
+  useNotifications: vi.fn(),
+}));
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
@@ -20,7 +24,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 const mockStorage = vi.mocked(storage);
-const mockUseMessages = vi.mocked(useMessages);
+const mockUseNotifications = vi.mocked(useNotifications);
 const mockUseLoginAction = vi.mocked(useLoginAction);
 
 const mockShowSuccess = vi.fn();
@@ -28,18 +32,18 @@ const mockShowError = vi.fn();
 
 const renderLoginPage = () =>
   render(
-    <BrowserRouter>
-      <LoginPage />
-    </BrowserRouter>,
+    <NotificationsProvider>
+      <BrowserRouter>
+        <LoginPage />
+      </BrowserRouter>
+    </NotificationsProvider>,
   );
 
 describe("LoginPage with Redux", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-
-    mockUseMessages.mockReturnValue({
-      successMessage: "",
-      errorMessage: "",
+    mockUseLoginAction.mockReturnValue(vi.fn());
+    mockUseNotifications.mockReturnValue({
       showSuccess: mockShowSuccess,
       showError: mockShowError,
     });
@@ -79,10 +83,7 @@ describe("LoginPage with Redux", () => {
         target: { value: "password123" },
       });
 
-      const submitButton = screen.getByRole("button", {
-        name: /iniciar sesión/i,
-      });
-
+      const submitButton = screen.getByLabelText("Iniciar sesión");
       await waitFor(() => expect(submitButton).toBeEnabled());
     });
   });

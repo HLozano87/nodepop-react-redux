@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Page } from "../../components/layout/page";
-import { useMessages } from "../../components/hooks/useMessage";
 import { Button } from "../../components/ui/button";
-import { Notifications } from "../../components/ui/notification";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { advertDeleted, advertLoadedById } from "../../store/adverts/actions";
 import { getAdvertById } from "../../store/adverts/selectors";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { AxiosError } from "axios";
+import { useNotifications } from "../../components/hooks/useNotifications";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,28 +16,27 @@ export const AdvertPage = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const { successMessage, errorMessage, showSuccess, showError } =
-    useMessages();
+  const { showSuccess, showError } = useNotifications();
   const advert = useAppSelector(getAdvertById(id));
 
-useEffect(() => {
-  if (!id) {
-    navigate("/not-found", { replace: true });
-    return;
-  }
-
-  const fetchAdvert = async () => {
-    try {
-      await dispatch(advertLoadedById(id));
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        navigate("/not-found", { replace: true });
-      }
+  useEffect(() => {
+    if (!id) {
+      navigate("/not-found", { replace: true });
+      return;
     }
-  };
 
-  fetchAdvert();
-}, [id, dispatch, navigate]);
+    const fetchAdvert = async () => {
+      try {
+        await dispatch(advertLoadedById(id));
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          navigate("/not-found", { replace: true });
+        }
+      }
+    };
+
+    fetchAdvert();
+  }, [id, dispatch, navigate]);
 
   if (!advert) {
     return <SpinnerLoadingText text="Cargando anuncio..." />;
@@ -51,12 +49,12 @@ useEffect(() => {
     setLoadingDelete(true);
     try {
       await dispatch(advertDeleted(id));
-      showSuccess("Anuncio borrado correctamente.");
+      showSuccess(`${advert.name} borrado correctamente.`);
       setLoadingDelete(false);
       navigate("/adverts", { replace: true });
     } catch (error) {
       setLoadingDelete(false);
-      showError("Error al borrar el anuncio. Inténtalo más tarde.");
+      showError(`Error al borrar ${advert.name}. Inténtalo más tarde.`);
     }
   };
 
@@ -122,12 +120,8 @@ useEffect(() => {
             </div>
           ) : (
             <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
-              <Notifications
-                successMessage={successMessage}
-                errorMessage={errorMessage}
-              />
               <p className="mb-4 text-lg font-semibold text-gray-700">
-                ¿Estás seguro que quieres borrar este anuncio?
+                ¿Estás seguro que quieres borrar {advert.name}?
               </p>
               <Button
                 className="mr-4 rounded-xl bg-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-400"
@@ -141,7 +135,11 @@ useEffect(() => {
                 onClick={confirmDelete}
                 disabled={loadingDelete}
               >
-                {loadingDelete ? <SpinnerLoadingText text="Borrando..." /> : "Confirmar"}
+                {loadingDelete ? (
+                  <SpinnerLoadingText text="Borrando..." />
+                ) : (
+                  "Confirmar"
+                )}
               </Button>
             </div>
           )}

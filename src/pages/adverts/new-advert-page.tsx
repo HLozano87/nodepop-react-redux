@@ -1,7 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "../../components/ui/button";
-import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/ui/notification";
 import type { AdvertPayload } from "./type-advert";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/formFields";
@@ -9,6 +7,7 @@ import { Page } from "../../components/layout/page";
 import { Form } from "../../components/ui/form";
 import { useAppDispatch, useAppSelector, type RootState } from "../../store";
 import { advertsCreated, advertsTagsLoaded } from "../../store/adverts/actions";
+import { useNotifications } from "../../components/hooks/useNotifications";
 
 export const NewAdvertPage = () => {
   const [formData, setFormData] = useState<AdvertPayload>({
@@ -21,8 +20,7 @@ export const NewAdvertPage = () => {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { successMessage, errorMessage, showSuccess, showError } =
-    useMessages();
+  const { showSuccess, showError } = useNotifications();
   const tags = useAppSelector((state: RootState) => state.adverts.tags);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -87,10 +85,6 @@ export const NewAdvertPage = () => {
           encType="multipart/form-data"
           method="POST"
         >
-          <Notifications
-            successMessage={successMessage}
-            errorMessage={errorMessage}
-          />
           <Input
             label="Nombre"
             labelClassName="label-newAdvert"

@@ -2,8 +2,6 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "../../components/ui/button";
 import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
-import { Notifications } from "../../components/ui/notification";
-import { useMessages } from "../../components/hooks/useMessage";
 import type { CredentialUser } from "./types-auth";
 import clsx from "clsx";
 import { EyeShow, EyeHide } from "../../components/icons/eyes";
@@ -11,12 +9,12 @@ import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/ui/formFields";
 import { useLoginAction } from "../../store/auth/hooks";
 import { Form } from "../../components/ui/form";
+import { useNotifications } from "../../components/hooks/useNotifications";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const loginAction = useLoginAction();
-  const { successMessage, errorMessage, showSuccess, showError } =
-    useMessages();
+  const { showSuccess, showError } = useNotifications();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -43,7 +41,6 @@ export const LoginPage = () => {
       showSuccess("¡Login exitoso!");
       navigate("/adverts", { replace: true });
     } catch (error) {
-      console.error("Login error:", error);
       showError("Credenciales incorrectas.");
       setCredentials((prev) => ({
         ...prev,
@@ -81,10 +78,6 @@ export const LoginPage = () => {
         }}
       >
         <div>
-          <Notifications
-            successMessage={successMessage}
-            errorMessage={errorMessage}
-          />
           <label
             htmlFor="email"
             className="block text-sm font-medium text-emerald-900"
@@ -143,7 +136,7 @@ export const LoginPage = () => {
         </div>
 
         <div className="input-login flex items-center justify-between text-sm">
-          <label className="flex items-center">
+          <label htmlFor="remember" className="flex items-center">
             <Input
               className="form-checkbox mr-2"
               name="remember"
