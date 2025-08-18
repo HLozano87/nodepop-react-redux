@@ -4,7 +4,7 @@ import { Button } from "./button";
 
 describe("rendering button with snapshot", () => {
   test("matches snapshot", () => {
-    const { asFragment } = render(<Button>Click me</Button>);
+    const { asFragment } = render(<Button type="submit" variant="primary">Click me</Button>);
     expect(asFragment()).toMatchSnapshot();
   });
 });
