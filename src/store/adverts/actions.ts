@@ -207,14 +207,18 @@ export const advertLoadedById = (advertId: string): AppThunk<Promise<void>> => {
   return async (dispatch, getState) => {
     const { adverts } = getState();
     const cachedAdvert = adverts.adverts?.find((adv) => adv.id === advertId);
-    cachedAdvert && dispatch(advertSelectedFulfilled(cachedAdvert));
+    if (cachedAdvert) {
+      dispatch(advertSelectedFulfilled(cachedAdvert));
+      return;
+    }
+    // cachedAdvert && dispatch(advertSelectedFulfilled(cachedAdvert));
 
     dispatch(advertSelectedPending());
     try {
       const advert = await getAdvertById(advertId);
       dispatch(advertSelectedFulfilled(advert));
     } catch (error) {
-      dispatch(advertDeletedRejected(error as Error));
+      dispatch(advertSelectedRejected(error as Error));
       throw error;
     }
   };

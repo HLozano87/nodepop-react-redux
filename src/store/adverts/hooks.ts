@@ -1,9 +1,11 @@
 import { useAppDispatch, useAppSelector } from "..";
+
 import {
   advertsLoaded,
   advertsCreated,
   advertsTagsLoaded,
   advertLoadedById,
+  advertDeleted,
 } from "./actions";
 import {
   getAdverts,
@@ -31,5 +33,6 @@ export const useAdvertsActions = () => {
     createAdvert: (formData: FormData) => dispatch(advertsCreated(formData)),
     loadTags: () => dispatch(advertsTagsLoaded()),
     advertLoadedById: (id: string) => dispatch(advertLoadedById(id)),
+    deleteAdvert: (id: string) => dispatch(advertDeleted(id)),
   };
 };

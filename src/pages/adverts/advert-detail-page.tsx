@@ -2,22 +2,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Page } from "../../components/layout/page";
 import { Button } from "../../components/ui/button";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { advertDeleted, advertLoadedById } from "../../store/adverts/actions";
-import { getAdvertById } from "../../store/adverts/selectors";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { AxiosError } from "axios";
 import { useNotifications } from "../../components/hooks/useNotifications";
+import {
+  useAdvertsActions,
+  useAdvertsLoading,
+  useSelectedAdvert,
+} from "../../store/adverts/hooks";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { showSuccess, showError } = useNotifications();
-  const advert = useAppSelector(getAdvertById(id));
+  const advert = useSelectedAdvert();
+  const isLoading = useAdvertsLoading();
+  const { advertLoadedById, deleteAdvert } = useAdvertsActions();
 
   useEffect(() => {
     if (!id) {
@@ -27,7 +30,7 @@ export const AdvertPage = () => {
 
     const fetchAdvert = async () => {
       try {
-        await dispatch(advertLoadedById(id));
+        await advertLoadedById(id);
       } catch (error) {
         if (error instanceof AxiosError) {
           navigate("/not-found", { replace: true });
@@ -36,10 +39,19 @@ export const AdvertPage = () => {
     };
 
     fetchAdvert();
-  }, [id, dispatch, navigate]);
+  }, [id, navigate]);
 
-  if (!advert) {
+  if (isLoading && !advert) {
     return <SpinnerLoadingText text="Cargando anuncio..." />;
+  }
+  if (!advert) {
+    return (
+      <Page title="Anuncio no encontrado">
+        <p className="text-center text-red-500">
+          El anuncio que buscas no está aquí.
+        </p>
+      </Page>
+    );
   }
   const handleDeleteClick = () => setShowConfirm(true);
   const cancelDelete = () => setShowConfirm(false);
@@ -48,7 +60,7 @@ export const AdvertPage = () => {
     if (!id) return;
     setLoadingDelete(true);
     try {
-      await dispatch(advertDeleted(id));
+      await deleteAdvert(id);
       showSuccess(`${advert.name} borrado correctamente.`);
       setLoadingDelete(false);
       navigate("/adverts", { replace: true });
@@ -121,7 +133,7 @@ export const AdvertPage = () => {
           ) : (
             <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
               <p className="mb-4 text-lg font-semibold text-gray-700">
-                ¿Estás seguro que quieres borrar {advert.name}?
+                ¿Estás seguro que quieres borrar "{advert.name}"?
               </p>
               <Button
                 className="mr-4 rounded-xl bg-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-400"
