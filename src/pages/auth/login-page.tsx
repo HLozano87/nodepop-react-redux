@@ -3,8 +3,6 @@ import { Button } from "../../components/ui/button";
 import { storage } from "../../utils/storage";
 import { Link, useNavigate } from "react-router-dom";
 import type { CredentialUser } from "./types-auth";
-import clsx from "clsx";
-import { EyeShow, EyeHide } from "../../components/icons/eyes";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/ui/formFields";
 import { useLoginAction } from "../../store/auth/hooks";
@@ -16,7 +14,6 @@ export const LoginPage = () => {
   const loginAction = useLoginAction();
   const { showSuccess, showError } = useNotifications();
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const [credential, setCredentials] = useState<CredentialUser>({
     email: "",
@@ -77,63 +74,30 @@ export const LoginPage = () => {
           remember: credential.remember ?? false,
         }}
       >
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-emerald-900"
-          >
-            Email
-          </label>
-          <Input
-            className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            value={credential.email}
-            required
-          />
-        </div>
+        <Input
+          label="Email"
+          className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          value={credential.email}
+          required
+        />
 
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-emerald-900"
-          >
-            Contraseña
-          </label>
-          <div className="relative">
-            <Input
-              className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              placeholder="Password"
-              autoComplete="off"
-              required
-              value={credential.password}
-              onChange={handleChange}
-            />
-            <Button
-              type="button"
-              className={clsx(
-                "absolute top-1/2 right-3 text-gray-400 transition-colors",
-                "-translate-y-1/3",
-                showPassword && "hover:text-emerald-600",
-                !showPassword && "hover:text-rose-600",
-              )}
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={isLoading}
-              aria-label={
-                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-              }
-              title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-            >
-              {showPassword ? <EyeHide /> : <EyeShow />}
-            </Button>
-          </div>
-        </div>
+        <Input
+          label="Contraseña"
+          className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          autoComplete="off"
+          required
+          value={credential.password}
+          onChange={handleChange}
+        />
 
         <div className="input-login flex items-center justify-between text-sm">
           <label htmlFor="remember" className="flex items-center">

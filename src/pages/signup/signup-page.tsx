@@ -7,16 +7,14 @@ import {
 import { Button } from "../../components/ui/button";
 import { createdUser } from "./service";
 import { useNavigate } from "react-router-dom";
-import { useMessages } from "../../components/hooks/useMessage";
-import { Notifications } from "../../components/ui/notification";
 import { REGEXP } from "../../utils/constants";
 import { Input } from "../../components/ui/formFields";
 import { Form } from "../../components/ui/form";
 import { Page } from "../../components/layout/page";
+import { useNotifications } from "../../components/hooks/useNotifications";
 
 export const SignUpPage = () => {
-  const { successMessage, errorMessage, showSuccess, showError } =
-    useMessages();
+  const { showSuccess, showError } = useNotifications();
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -91,10 +89,6 @@ export const SignUpPage = () => {
   return (
     <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
       <Page title={"Registro"}>
-        <Notifications
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-        />
         <Form onSubmit={handleSubmit} className="space-y-5">
           <Input
             label="Nombre"
@@ -128,7 +122,7 @@ export const SignUpPage = () => {
             )}
 
           <Input
-            label="Correo"
+            label="Email"
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="email"
             id="email"

@@ -62,7 +62,7 @@ describe("LoginPage with Redux", () => {
       expect(
         screen.getByRole("textbox", { name: /email/i }),
       ).toBeInTheDocument();
-      expect(screen.getByLabelText("Contraseña")).toBeInTheDocument();
+      expect(screen.getByLabelText("Contraseña *")).toBeInTheDocument();
       expect(
         screen.getByRole("checkbox", { name: /recuérdame/i }),
       ).toBeInTheDocument();
@@ -73,17 +73,28 @@ describe("LoginPage with Redux", () => {
   });
 
   describe("Form validation", () => {
+    test("disables submit button initially", () => {
+      renderLoginPage();
+
+      const submitButton = screen.getByRole("button", {
+        name: /iniciar sesión/i,
+      });
+      expect(submitButton).toBeDisabled();
+    });
+
     test("enables submit button when both email and password are filled", async () => {
       renderLoginPage();
 
       fireEvent.change(screen.getByRole("textbox", { name: /email/i }), {
         target: { value: "test@example.com" },
       });
-      fireEvent.change(screen.getByLabelText("Contraseña"), {
+      fireEvent.change(screen.getByLabelText("Contraseña *"), {
         target: { value: "password123" },
       });
 
-      const submitButton = screen.getByLabelText("Iniciar sesión");
+      const submitButton = screen.getByRole("button", {
+        name: /iniciar sesión/i,
+      });
       await waitFor(() => expect(submitButton).toBeEnabled());
     });
   });
@@ -93,7 +104,7 @@ describe("LoginPage with Redux", () => {
       renderLoginPage();
 
       const passwordInput = screen.getByLabelText(
-        "Contraseña",
+        "Contraseña *",
       ) as HTMLInputElement;
       const toggleButton = screen.getByRole("button", {
         name: /mostrar contraseña/i,
@@ -120,11 +131,14 @@ describe("LoginPage with Redux", () => {
       fireEvent.change(screen.getByRole("textbox", { name: /email/i }), {
         target: { value: "test@example.com" },
       });
-      fireEvent.change(screen.getByLabelText("Contraseña"), {
+      fireEvent.change(screen.getByLabelText("Contraseña *"), {
         target: { value: "password123" },
       });
 
-      fireEvent.click(screen.getByRole("button", { name: /iniciar sesión/i }));
+      const submitButton = screen.getByRole("button", {
+        name: /iniciar sesión/i,
+      });
+      fireEvent.click(submitButton);
 
       await waitFor(() => {
         expect(mockLogin).toHaveBeenCalledWith({
@@ -148,14 +162,54 @@ describe("LoginPage with Redux", () => {
       fireEvent.change(screen.getByRole("textbox", { name: /email/i }), {
         target: { value: "test@example.com" },
       });
-      fireEvent.change(screen.getByLabelText("Contraseña"), {
+      fireEvent.change(screen.getByLabelText("Contraseña *"), {
         target: { value: "password123" },
       });
       fireEvent.click(screen.getByRole("checkbox", { name: /recuérdame/i }));
-      fireEvent.click(screen.getByRole("button", { name: /iniciar sesión/i }));
+
+      const submitButton = screen.getByRole("button", {
+        name: /iniciar sesión/i,
+      });
+      fireEvent.click(submitButton);
 
       await waitFor(() => {
         expect(mockStorage.set).toHaveBeenCalledWith("auth", "mock-token");
+      });
+    });
+
+    test("shows error message and clears form on login failure", async () => {
+      const mockLogin = vi
+        .fn()
+        .mockRejectedValue(new Error("Invalid credentials"));
+      mockUseLoginAction.mockReturnValue(mockLogin);
+
+      renderLoginPage();
+
+      fireEvent.change(screen.getByRole("textbox", { name: /email/i }), {
+        target: { value: "wrong@example.com" },
+      });
+      fireEvent.change(screen.getByLabelText("Contraseña *"), {
+        target: { value: "wrongpassword" },
+      });
+
+      const submitButton = screen.getByRole("button", {
+        name: /iniciar sesión/i,
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockShowError).toHaveBeenCalledWith("Credenciales incorrectas.");
+      });
+
+      await waitFor(() => {
+        const emailInput = screen.getByRole("textbox", {
+          name: /email/i,
+        }) as HTMLInputElement;
+        const passwordInput = screen.getByLabelText(
+          "Contraseña *",
+        ) as HTMLInputElement;
+        expect(emailInput.value).toBe("");
+        expect(passwordInput.value).toBe("");
       });
     });
   });
