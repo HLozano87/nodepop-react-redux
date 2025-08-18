@@ -1,7 +1,7 @@
 import type { Advert } from "../../pages/adverts/type-advert";
 import type { AdvertActions } from "./actions";
 
-export type State = {
+export type AdvertsState = {
   adverts: Advert[] | null;
   tags: string[];
   selectedAdvert: Advert | null;
@@ -9,7 +9,7 @@ export type State = {
   error: string | null;
 };
 
-const defaultState: State = {
+const defaultState: AdvertsState = {
   adverts: null,
   tags: [],
   selectedAdvert: null,
@@ -18,9 +18,9 @@ const defaultState: State = {
 };
 
 export const adverts = (
-  state: State = defaultState,
+  state: AdvertsState = defaultState,
   action: AdvertActions,
-): State => {
+): AdvertsState => {
   switch (action.type) {
     /**
      * Case Loaded

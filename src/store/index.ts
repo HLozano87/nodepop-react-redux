@@ -2,18 +2,19 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import { auth } from "./auth/reducer";
 import { adverts } from "./adverts/reducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux";
 import * as thunk from "redux-thunk";
 import type { AuthActions } from "./auth/actions";
 import type { AdvertActions } from "./adverts/actions";
 
 const rootReducer = combineReducers({ auth, adverts });
-export type RootAction = AuthActions | AdvertActions
+export type RootAction = AuthActions | AdvertActions;
+export type RootState = ReturnType<typeof rootReducer>;
 
 export function configureStore(preloadedState: Partial<RootState>) {
   const store = createStore(
     rootReducer,
-    preloadedState as never,
+    preloadedState as RootState as never,
     composeWithDevTools(
       applyMiddleware(thunk.withExtraArgument<RootState, RootAction>()),
     ),
@@ -22,11 +23,11 @@ export function configureStore(preloadedState: Partial<RootState>) {
 }
 
 export type AppStore = ReturnType<typeof configureStore>;
-export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = AppStore["dispatch"];
 
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>();
+// NEW method to create typed hooks
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export type AppThunk<ReturnType = void> = thunk.ThunkAction<
   ReturnType,

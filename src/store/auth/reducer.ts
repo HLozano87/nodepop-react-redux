@@ -1,17 +1,17 @@
 import type { AuthActions } from "./actions";
 
-export type State = {
+export type AuthState = {
   auth: boolean;
 };
 
-const defaultState: State = {
+const defaultState: AuthState = {
   auth: false,
 };
 
 export const auth = (
   state = defaultState.auth,
   action: AuthActions,
-): State["auth"] => {
+): AuthState["auth"] => {
   switch (action.type) {
     case "auth/login/fulfilled":
       return true;

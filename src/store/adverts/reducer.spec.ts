@@ -1,4 +1,4 @@
-import type { State } from "./reducer";
+import type { AdvertsState } from "./reducer";
 import { adverts } from "./reducer";
 import type { Advert } from "../../pages/adverts/type-advert";
 
@@ -15,7 +15,7 @@ describe("adverts reducer", () => {
     createdAt: fixedDate,
   };
 
-  const initialState: State = {
+  const initialState: AdvertsState = {
     adverts: null,
     tags: [],
     selectedAdvert: null,
@@ -28,7 +28,7 @@ describe("adverts reducer", () => {
   const loadingState = { ...initialState, loading: true, error: null };
 
   // Helper para verificar error state
-  const expectErrorState = (state: State, message: string) => {
+  const expectErrorState = (state: AdvertsState, message: string) => {
     expect(state.error).toBe(message);
     expect(state.loading).toBe(false);
   };
