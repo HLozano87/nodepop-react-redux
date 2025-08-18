@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rendering button with snapshot > matches snapshot 1`] = `
+<DocumentFragment>
+  <button
+    class="btn-undefined cursor-pointer"
+  >
+    Click me
+  </button>
+</DocumentFragment>
+`;

@@ -4,7 +4,7 @@ import { Button } from "./button";
 
 describe("rendering button with snapshot", () => {
   test("matches snapshot", () => {
-    const { asFragment } = render(<Button type="submit" variant="primary">Click me</Button>);
+    const { asFragment } = render(<Button>Click me</Button>);
     expect(asFragment()).toMatchSnapshot();
   });
 });
@@ -19,7 +19,7 @@ describe("Button", () => {
     const { rerender } = render(<Button variant="primary">Primary</Button>);
     expect(screen.getByRole("button")).toHaveClass("btn-primary");
 
-    rerender(<Button variant="secondary">Secondary</Button>);
+    rerender(<Button type="submit" variant="secondary">Secondary</Button>);
     expect(screen.getByRole("button")).toHaveClass("btn-secondary");
   });
 
