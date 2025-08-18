@@ -1,63 +1,13 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "../../components/ui/button";
-import { storage } from "../../utils/storage";
-import { Link, useNavigate } from "react-router-dom";
-import type { CredentialUser } from "./types-auth";
+import { Link } from "react-router-dom";
 import { SpinnerLoadingText } from "../../components/icons/spinner";
 import { Input } from "../../components/ui/formFields";
-import { useLoginAction } from "../../store/auth/hooks";
 import { Form } from "../../components/ui/form";
-import { useNotifications } from "../../components/hooks/useNotifications";
+import { useLoginForm } from "../../components/hooks/useLoginForm";
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
-  const loginAction = useLoginAction();
-  const { showSuccess, showError } = useNotifications();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [credential, setCredentials] = useState<CredentialUser>({
-    email: "",
-    password: "",
-    remember: false,
-  });
-
-  const isLoginValid =
-    credential.email.trim() !== "" && credential.password.trim() !== "";
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoading(true);
-    try {
-      const token = await loginAction(credential);
-      if (credential.remember) {
-        storage.set("auth", token);
-      } else {
-        storage.remove("auth");
-      }
-
-      showSuccess("¡Login exitoso!");
-      navigate("/adverts", { replace: true });
-    } catch (error) {
-      showError("Credenciales incorrectas.");
-      setCredentials((prev) => ({
-        ...prev,
-        email: "",
-        password: "",
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const { name, type, value, checked } = event.target;
-
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [name]: type === "checkbox" ? checked : value,
-      ...(name === "email" ? { password: "" } : ""),
-    }));
-  }
+  const { credentials, isLoading, isLoginValid, handleChange, handleSubmit } =
+    useLoginForm();
 
   return (
     <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
@@ -69,9 +19,9 @@ export const LoginPage = () => {
         onSubmit={handleSubmit}
         className="space-y-5"
         initialValue={{
-          email: credential.email,
-          password: credential.password,
-          remember: credential.remember ?? false,
+          email: credentials.email,
+          password: credentials.password,
+          remember: credentials.remember ?? false,
         }}
       >
         <Input
@@ -82,7 +32,7 @@ export const LoginPage = () => {
           name="email"
           placeholder="Email"
           onChange={handleChange}
-          value={credential.email}
+          value={credentials.email}
           required
         />
 
@@ -95,7 +45,7 @@ export const LoginPage = () => {
           placeholder="Password"
           autoComplete="off"
           required
-          value={credential.password}
+          value={credentials.password}
           onChange={handleChange}
         />
 
@@ -106,7 +56,7 @@ export const LoginPage = () => {
               name="remember"
               type="checkbox"
               id="remember"
-              checked={credential.remember}
+              checked={credentials.remember}
               onChange={handleChange}
             />
             Recuérdame
