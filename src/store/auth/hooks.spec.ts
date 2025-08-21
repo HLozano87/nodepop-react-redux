@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react";
 import { useAuth, useLoginAction, useLogoutAction } from "./hooks";
 import type { RootState } from "..";
-import { vi, type Mock } from "vitest";
+import { type Mock } from "vitest";
 import { useAppSelector, useAppDispatch } from "../index";
 import { authLogin, authLogout } from "./actions";
 

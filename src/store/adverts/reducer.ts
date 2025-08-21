@@ -17,24 +17,23 @@ const defaultState: AdvertsState = {
   error: null,
 };
 
+const handleError = (error: unknown, defaultMessage: string) =>
+  (error as Error | undefined)?.message ?? defaultMessage;
+
 export const adverts = (
   state: AdvertsState = defaultState,
-  action: AdvertActions,
+  action: AdvertActions
 ): AdvertsState => {
   switch (action.type) {
-    /**
-     * Case Loaded
-     */
+    // LOADED
     case "adverts/loaded/pending":
       return { ...state, loading: true, error: null };
     case "adverts/loaded/fulfilled":
       return { ...state, adverts: action.payload, loading: false };
     case "adverts/loaded/rejected":
-      return { ...state, loading: false, error: action.error.message };
+      return { ...state, loading: false, error: handleError(action.error, "Error loading adverts") };
 
-    /**
-     * Case Created
-     */
+    // CREATED
     case "adverts/created/pending":
       return { ...state, loading: true, error: null };
     case "adverts/created/fulfilled":
@@ -44,46 +43,34 @@ export const adverts = (
         loading: false,
       };
     case "adverts/created/rejected":
-      return { ...state, loading: false, error: action.error.message };
+      return { ...state, loading: false, error: handleError(action.error, "Error creating advert") };
 
-    /**
-     * Case Tags
-     */
+    // TAGS
     case "adverts/tags/pending":
       return { ...state, loading: true, error: null };
     case "adverts/tags/fulfilled":
-      return { ...state, tags: action.payload, error: null };
+      return { ...state, loading: false, tags: action.payload, error: null };
     case "adverts/tags/rejected":
-      return {
-        ...state,
-        loading: false,
-        error: action.error.message,
-      };
-    /**
-     * Case Selected
-     */
+      return { ...state, loading: false, error: handleError(action.error, "Error fetching tags") };
+
+    // SELECTED
     case "adverts/selected/pending":
       return { ...state, loading: true, error: null, selectedAdvert: null };
     case "adverts/selected/fulfilled":
       return { ...state, loading: false, selectedAdvert: action.payload };
     case "adverts/selected/rejected":
-      return { ...state, loading: false, error: action.error.message };
-    /**
-     * Case Delete
-     */
+      return { ...state, loading: false, error: handleError(action.error, "Error advert does not exist") };
+
+    // DELETED
     case "adverts/deleted/pending":
       return { ...state, loading: true, error: null };
-    case "adverts/deleted/fulfilled":
-      return {
-        ...state,
-        adverts: state.adverts
-          ? state.adverts.filter((advert) => advert.id !== action.payload)
-          : null,
-        loading: false,
-        error: null,
-      };
+    case "adverts/deleted/fulfilled": {
+      if (!state.adverts) return { ...state, adverts: null, loading: false, error: null };
+      const updatedAdverts = state.adverts.filter(advert => advert.id !== action.payload);
+      return { ...state, adverts: updatedAdverts, loading: false, error: null };
+    }
     case "adverts/deleted/rejected":
-      return { ...state, loading: false, error: action.error.message };
+      return { ...state, loading: false, error: handleError(action.error, "Error deleting advert") };
 
     default:
       return state;

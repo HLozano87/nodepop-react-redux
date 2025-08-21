@@ -22,21 +22,24 @@ describe("adverts reducer", () => {
     loading: false,
     error: null,
   };
-
-  const error = new Error("Something went wrong");
-
+  const error = new Error("Custom error");
   const loadingState = { ...initialState, loading: true, error: null };
 
   // Helper para verificar error state
-  const expectErrorState = (state: AdvertsState, message: string) => {
-    expect(state.error).toBe(message);
+  const expectErrorState = (
+    state: AdvertsState,
+    defaultMessage: string,
+    err?: Error,
+  ) => {
     expect(state.loading).toBe(false);
+    expect(state.error).toBe(err?.message ?? defaultMessage);
   };
 
   // LOADED
   test("should handle adverts/loaded/pending", () => {
-    expect(adverts(initialState, { type: "adverts/loaded/pending" }))
-      .toEqual(loadingState);
+    expect(adverts(initialState, { type: "adverts/loaded/pending" })).toEqual(
+      loadingState,
+    );
   });
 
   test("should handle adverts/loaded/fulfilled", () => {
@@ -52,39 +55,75 @@ describe("adverts reducer", () => {
     });
   });
 
-  test("should handle adverts/loaded/rejected", () => {
+  test("should handle adverts/loaded/fulfilled empty payload", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/loaded/fulfilled",
+      payload: [],
+    });
+    expect(newState.adverts).toEqual([]);
+    expect(newState.loading).toBe(false);
+    expect(newState.error).toBeNull();
+  });
+
+  test("should handle adverts/created/fulfilled when adverts is null", () => {
+    const newAdvert: Advert = { ...sampleAdvert, id: "2" };
+    const newState = adverts(initialState, {
+      type: "adverts/created/fulfilled",
+      payload: newAdvert,
+    });
+    expect(newState.adverts).toEqual([newAdvert]);
+    expect(newState.loading).toBe(false);
+    expect(newState.error).toBeNull();
+  });
+
+  test("should handle adverts/loaded/rejected undefined error", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/loaded/rejected",
+      error: { message: undefined } as unknown as Error,
+    });
+    expectErrorState(newState, "Error loading adverts");
+  });
+
+  test("should handle adverts/loaded/rejected with error message", () => {
     const newState = adverts(initialState, {
       type: "adverts/loaded/rejected",
       error,
     });
-    expectErrorState(newState, error.message);
+    expectErrorState(newState, "Error loading adverts", error);
   });
 
   // CREATED
   test("should handle adverts/created/pending", () => {
-    expect(adverts(initialState, { type: "adverts/created/pending" }))
-      .toEqual(loadingState);
+    expect(adverts(initialState, { type: "adverts/created/pending" })).toEqual(
+      loadingState,
+    );
   });
 
   test("should handle adverts/created/fulfilled", () => {
     const prevState = { ...initialState, adverts: [sampleAdvert] };
     const newAdvert: Advert = { ...sampleAdvert, id: "2" };
-
     const newState = adverts(prevState, {
       type: "adverts/created/fulfilled",
       payload: newAdvert,
     });
-
     expect(newState.adverts).toEqual([newAdvert, sampleAdvert]);
     expect(newState.adverts).not.toBe(prevState.adverts);
   });
 
-  test("should handle adverts/created/rejected", () => {
+  test("should handle adverts/created/rejected undefined error", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/created/rejected",
+      error: { message: undefined } as unknown as Error,
+    });
+    expectErrorState(newState, "Error creating advert");
+  });
+
+  test("should handle adverts/created/rejected with error message", () => {
     const newState = adverts(initialState, {
       type: "adverts/created/rejected",
       error,
     });
-    expectErrorState(newState, error.message);
+    expectErrorState(newState, "Error creating advert", error);
   });
 
   // TAGS
@@ -107,18 +146,37 @@ describe("adverts reducer", () => {
     });
   });
 
-  test("should handle adverts/tags/rejected", () => {
+  test("should handle adverts/tags/fulfilled empty", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/tags/fulfilled",
+      payload: [],
+    });
+    expect(newState.tags).toEqual([]);
+    expect(newState.loading).toBe(false);
+    expect(newState.error).toBeNull();
+  });
+
+  test("should handle adverts/tags/rejected undefined error", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/tags/rejected",
+      error: { message: undefined } as unknown as Error,
+    });
+    expectErrorState(newState, "Error fetching tags");
+  });
+
+  test("should handle adverts/tags/rejected with error message", () => {
     const newState = adverts(initialState, {
       type: "adverts/tags/rejected",
       error,
     });
-    expectErrorState(newState, error.message);
+    expectErrorState(newState, "Error fetching tags", error);
   });
 
   // SELECTED
   test("should handle adverts/selected/pending", () => {
-    expect(adverts(initialState, { type: "adverts/selected/pending" }))
-      .toEqual({ ...loadingState, selectedAdvert: null });
+    expect(adverts(initialState, { type: "adverts/selected/pending" })).toEqual(
+      { ...loadingState, selectedAdvert: null },
+    );
   });
 
   test("should handle adverts/selected/fulfilled", () => {
@@ -139,16 +197,17 @@ describe("adverts reducer", () => {
       type: "adverts/selected/rejected",
       error,
     });
-    expectErrorState(newState, error.message);
+    expectErrorState(newState, "Error advert does not exist", error);
   });
 
   // DELETED
   test("should handle adverts/deleted/pending", () => {
-    expect(adverts(initialState, { type: "adverts/deleted/pending" }))
-      .toEqual(loadingState);
+    expect(adverts(initialState, { type: "adverts/deleted/pending" })).toEqual(
+      loadingState,
+    );
   });
 
-  test("should handle adverts/deleted/fulfilled", () => {
+  test("should handle adverts/deleted/fulfilled when advert exists", () => {
     const prevState = { ...initialState, adverts: [sampleAdvert] };
     const newState = adverts(prevState, {
       type: "adverts/deleted/fulfilled",
@@ -156,14 +215,51 @@ describe("adverts reducer", () => {
     });
     expect(newState.adverts).toEqual([]);
     expect(newState.adverts).not.toBe(prevState.adverts);
+    expect(newState.loading).toBe(false);
+    expect(newState.error).toBeNull();
   });
 
-  test("should handle adverts/deleted/rejected", () => {
+  test("adverts/deleted/fulfilled when advert does not exist", () => {
+    const prevState = { ...initialState, adverts: [sampleAdvert] };
+    const newState = adverts(prevState, {
+      type: "adverts/deleted/fulfilled",
+      payload: "999",
+    });
+    expect(newState.adverts).toEqual([sampleAdvert]);
+    expect(newState.adverts).not.toBe(prevState.adverts);
+    expect(newState.loading).toBe(false);
+    expect(newState.error).toBeNull();
+  });
+
+  test("should handle adverts/deleted/rejected undefined error", () => {
+    const newState = adverts(initialState, {
+      type: "adverts/deleted/rejected",
+      error: { message: undefined } as unknown as Error,
+    });
+    expectErrorState(newState, "Error deleting advert");
+  });
+
+  test("should handle adverts/deleted/rejected with error message", () => {
     const newState = adverts(initialState, {
       type: "adverts/deleted/rejected",
       error,
     });
-    expectErrorState(newState, error.message);
+    expectErrorState(newState, "Error deleting advert", error);
+  });
+
+  test("should handle adverts/deleted/fulfilled when adverts is null", () => {
+    // Usar initialState directamente porque adverts: null
+    const newState = adverts(initialState, {
+      type: "adverts/deleted/fulfilled",
+      payload: "1",
+    });
+
+    expect(newState).toEqual({
+      ...initialState,
+      adverts: null, // Se mantiene null
+      loading: false,
+      error: null,
+    });
   });
 
   // DEFAULT
