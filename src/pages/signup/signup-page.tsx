@@ -31,10 +31,12 @@ export const SignUpPage = () => {
             type="text"
             id="username"
             name="username"
+            required
             minLength={4}
             value={formData.username}
             placeholder="Nombre de usuario"
             onChange={handleChange}
+            onBlur={handleBlur}
             aria-invalid={formData.username.length < 4}
           />
           {formData.username.trim().length > 0 &&
