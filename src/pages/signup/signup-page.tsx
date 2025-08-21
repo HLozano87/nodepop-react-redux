@@ -1,91 +1,14 @@
-import {
-  useState,
-  type FormEvent,
-  type ChangeEvent,
-  type FocusEvent,
-} from "react";
 import { Button } from "../../components/ui/button";
-import { createdUser } from "./service";
-import { useNavigate } from "react-router-dom";
-import { REGEXP } from "../../utils/constants";
 import { Input } from "../../components/ui/formFields";
 import { Form } from "../../components/ui/form";
 import { Page } from "../../components/layout/page";
-import { useNotifications } from "../../components/hooks/useNotifications";
+import { useSignUp } from "../../components/hooks/useSignUp";
+import { SpinnerLoadingText } from "../../components/icons/spinner";
 
 export const SignUpPage = () => {
-  const { showSuccess, showError } = useNotifications();
-
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = ({
-    target: { name, value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    const newValue =
-      name === "username" || name === "email"
-        ? value.toLowerCase().trim()
-        : value.trim();
-    setFormData((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
-  };
-
-  const handleBlur = ({
-    target: { name, value },
-  }: FocusEvent<HTMLInputElement>) => {
-    if (name === "email") {
-      if (!REGEXP.email.test(value)) {
-        showError("El email no es válido.");
-      } else {
-        showError("");
-      }
-    } else if (name === "username") {
-      if (!REGEXP.username.test(value)) {
-        showError("El nombre de usuario no es válido.");
-      } else {
-        showError("");
-      }
-    }
-  };
-
-  const isFormValid =
-    formData.name !== "" &&
-    REGEXP.email.test(formData.email) &&
-    REGEXP.username.test(formData.username) &&
-    formData.password !== "";
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      showError("Las contraseñas no coinciden.");
-      return;
-    }
-
-    if (!formData.name || !formData.username || !formData.email) {
-      showError("Por favor rellene todos los campos.");
-      return;
-    }
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { confirmPassword, ...dataSend } = formData;
-      await createdUser(dataSend);
-
-      showSuccess("Usuario creado con éxito");
-      navigate(`/adverts`, { replace: true });
-    } catch (error: unknown) {
-      console.error("Error creating user:", error);
-      showError("Error al crear el usuario.");
-    }
-  };
-
+  const { formData, isFormValid, isLoading, handleChange, handleSubmit, handleBlur } =
+    useSignUp();
+    
   return (
     <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
       <Page title={"Registro"}>
@@ -160,9 +83,9 @@ export const SignUpPage = () => {
             required
             onChange={handleChange}
           />
-
           <Button type="submit" variant="primary" disabled={!isFormValid}>
-            Registrarse
+            {isLoading ? (
+              <SpinnerLoadingText text="Procesando..." />) : ("Registrarse")}
           </Button>
         </Form>
       </Page>
