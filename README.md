@@ -87,13 +87,15 @@ Open your browser at [http://localhost:5173](http://localhost:5173) to see the a
 
 ## 🧩 Available scripts
 
-| Script            | Description                                         |
-| ----------------- | --------------------------------------------------- |
-| `npm run dev`     | Runs the app in development mode with **Vite**      |
-| `npm run build`   | Compiles TypeScript and builds for production       |
-| `npm run preview` | Previews the production build                       |
-| `npm run lint`    | Runs ESLint code analysis                           |
-| `npm run format`  | Formats the entire project with Prettier + Tailwind |
+| Script                  | Description                                          |
+| ----------------------- | ---------------------------------------------------- |
+| `npm run dev`           | Runs the app in development mode with **Vite**       |
+| `npm run build`         | Compiles TypeScript and builds for production        |
+| `npm run preview`       | Previews the production build                        |
+| `npm run lint`          | Runs ESLint code analysis                            |
+| `npm run test`          | Runs Vitest code testing                             |
+| `npm run test:coverage` | Runs Vitest code testing with percentage to coverage |
+| `npm run format`        | Formats the entire project with Prettier + Tailwind  |
 
 ---
 
